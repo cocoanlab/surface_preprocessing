@@ -103,6 +103,7 @@ for i = 1:numel(PREPROC.func_bold_files)
             ' ' PREPROC.mean_w_func_bold_files{i} ...
             ' ' num2str(brightness_threshold) ...
             ' ' PREPROC.s_func_bold_files{i}]);
+        system(['rm ' PREPROC.s_func_bold_files{i} '_usan_size.nii']);
         
         if i == 1
             fprintf('\n\nWorking on Reference image...\n\n');

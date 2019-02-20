@@ -1,4 +1,4 @@
-function [rootdir, basedir, rscdir] = set_path_env(varargin)
+function [rootdir, basedir, rscdir, gitdir] = set_path_env(varargin)
 
 % The function gets useful directory names and sets basic environment
 % (path to toolboxes, environment variables, maximum number of CPU cores)
@@ -7,7 +7,7 @@ function [rootdir, basedir, rscdir] = set_path_env(varargin)
 %
 % :Usage:
 % ::
-%     [rootdir, basedir, rscdir] = set_path_env(varargin)
+%     [rootdir, basedir, rscdir, gitdir] = set_path_env(varargin)
 %
 %
 % :Optional Input:
@@ -15,6 +15,10 @@ function [rootdir, basedir, rscdir] = set_path_env(varargin)
 %   - hostname           custom hostname.
 %                        if this option is not specified, then the function
 %                        get host name by system('hostname') function.
+%   - no_canlab          do not add canlab path
+%   - no_cocoanlab       do not add cocoanlab path
+%   - no_spm12           do not add spm12
+%   - no_others          do not add other toolboxes (dicm2nii, BCT)
 %   - ncpu               number of CPU cores to be used (default: 1).
 %
 %
@@ -24,6 +28,8 @@ function [rootdir, basedir, rscdir] = set_path_env(varargin)
 %                        'root' based on exact definition although...).
 %     basedir            base working directory.
 %     rscdir             resource directory that contains toolboxes.
+%     gitdir             github directory that contains canlab and
+%                        cocoanlab toolboxes.
 %
 %
 % :Example:
@@ -52,12 +58,24 @@ function [rootdir, basedir, rscdir] = set_path_env(varargin)
 
 [~, hostname] = system('hostname');
 hostname = strtrim(hostname);
+add_canlab = true;
+add_cocoanlab = true;
+add_spm12 = true;
+add_others = true;
 ncpu = 1;
 for i = 1:length(varargin)
     if ischar(varargin{i})
         switch varargin{i}
             case {'hostname'}
                 hostname = varargin{i+1};
+            case {'no_canlab'}
+                add_canlab = false;
+            case {'no_cocoanlab'}
+                add_cocoanlab = false;
+            case {'no_spm12'}
+                add_spm12 = false;
+            case {'no_others'}
+                add_others = false;
             case {'ncpu'}
                 ncpu = varargin{i+1};
         end
@@ -69,32 +87,36 @@ if regexp(hostname, ['\w*' 'hebenula.local' '\w*'])
     rootdir = '/Volumes/habenula';
     basedir = fullfile(rootdir, 'hbmnas');
     rscdir = fullfile(rootdir, 'Resource');
+    gitdir = fullfile(rootdir, 'github');
 elseif regexp(hostname, ['\w*' 'cocoanui-iMac-Pro4.local' '\w*'])
     fprintf('Currently working on alita!\n');
     rootdir = '/Volumes/alita';
     basedir = fullfile(rootdir, 'hbmnas');
     rscdir = fullfile(rootdir, 'Resource');
+    gitdir = fullfile(rootdir, 'github');
 elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
     fprintf('Currently working on HPC!\n');
     rootdir = '/cocoanlab';
     basedir = fullfile(rootdir, 'habenula_sync2');
-    rscdir = fullfile(rootdir, 'Resources');
+    rscdir = '/sas1/cocoanlab/Resources';
+    gitdir = '/sas1/cocoanlab/Resources/github';
 elseif regexp(hostname, ['\w*' 'JaeJoongui-MacBook-Pro.local' '\w*'])
     fprintf('Currently working on JJ macbook!\n');
     rootdir = '/Users/jaejoonglee';
     basedir = fullfile(rootdir, 'hbmnas');
     rscdir = fullfile(rootdir, 'Resource');
+    gitdir = fullfile(rootdir, 'github');
 else
     error('No matching hostname.');
 end
 
-addpath(genpath(fullfile(rscdir, 'matlab_toolboxes/canlab')));
-addpath(genpath(fullfile(rscdir, 'matlab_toolboxes/cocoanlab')));
-addpath(genpath(fullfile(rscdir, 'spm12')));
-
-rmpath(genpath(fullfile(rscdir, 'matlab_toolboxes/canlab/CanlabPrivate/dicm2nii')));
-rmpath(genpath(fullfile(rscdir, 'matlab_toolboxes/cocoanlab/humanfmri_preproc_bids/external/dicm2nii')));
-addpath(genpath(fullfile(rscdir, 'matlab_toolboxes/dicm2nii')));
+if add_canlab; addpath(genpath(fullfile(gitdir, 'canlab'))); end
+if add_cocoanlab; addpath(genpath(fullfile(gitdir, 'cocoanlab'))); end
+if add_spm12; addpath(genpath(fullfile(rscdir, 'spm12'))); end
+if add_others
+    addpath(genpath(fullfile(rscdir, 'fmri_toolboxes/dicm2nii')));
+    addpath(genpath(fullfile(rscdir, 'fmri_toolboxes/BCT')));
+end
 
 setenv('DYLD_LIBRARY_PATH', [getenv('FREESURFER_HOME') '/lib/gcc/lib' ':/opt/X11/lib/flat_namespace']);
 maxNumCompThreads(ncpu);

@@ -1,11 +1,11 @@
-function change_basedir_PREPROC(PREPROC_path, orig_basedir, new_basedir)
+function change_PREPROC(PREPROC_path, orig_basedir, new_basedir)
 
 % The function change basedir of PREPROC.
 %
 %
 % :Usage:
 % ::
-%     change_basedir_PREPROC(PREPROC_path, orig_basedir, new_basedir)
+%     change_PREPROC(PREPROC_path, orig_basedir, new_basedir)
 %
 %
 % :Input:
