@@ -26,6 +26,10 @@ function PREPROC = humanfmri_s13_ciftifyfmri(subject_code, study_imaging_dir, ci
 %
 % :Output:
 % ::
+%     PREPROC.cifti_func_dir
+%     PREPROC.cifti_func_bold_files
+%     PREPROC.cifti_anat_midthickness_L_file
+%     PREPROC.cifti_anat_midthickness_R_file
 %
 %
 % :Example:
@@ -117,9 +121,15 @@ for i = 1:numel(PREPROC.func_bold_files)
             ' ' functype ...
             ' ' PREPROC.subject_code]);
         
+        PREPROC.cifti_func_dir{i, 1} = fullfile(PREPROC.cifti_dir, subject_code, 'MNINonLinear', 'Results', functype);
+        PREPROC.cifti_func_bold_files{i, 1} = fullfile(PREPROC.cifti_func_dir{i}, [functype '_Atlas_s5.dtseries.nii']);
+        
     end
     
 end
+
+PREPROC.cifti_anat_midthickness_L_file = fullfile(PREPROC.cifti_dir, subject_code, 'MNINonLinear', 'fsaverage_LR32k', [subject_code '.L.midthickness.32k_fs_LR.surf.gii']);
+PREPROC.cifti_anat_midthickness_R_file = fullfile(PREPROC.cifti_dir, subject_code, 'MNINonLinear', 'fsaverage_LR32k', [subject_code '.R.midthickness.32k_fs_LR.surf.gii']);
 
 save_load_PREPROC(PREPROC.preproc_outputdir, 'save', PREPROC); % save PREPROC
 fprintf('\n\n\n');

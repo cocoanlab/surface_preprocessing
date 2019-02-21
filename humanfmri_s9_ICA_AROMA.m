@@ -36,6 +36,7 @@ function PREPROC = humanfmri_s9_ICA_AROMA(subject_code, study_imaging_dir, ica_a
 %     PREPROC.i_func_bold_files
 %     PREPROC.mean_i_func_bold_files
 %     PREPROC.mean_i_func_bold_files_masked
+%     saves qc_images/mean_[prefix]_func_bold_masked.png
 %
 %
 % :Example:

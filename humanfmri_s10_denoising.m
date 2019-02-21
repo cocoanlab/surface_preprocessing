@@ -25,6 +25,7 @@ function PREPROC = humanfmri_s10_denoising(subject_code, study_imaging_dir, vara
 % ::
 %     PREPROC.n_func_bold_files
 %     PREPROC.mean_n_func_bold_files
+%     saves qc_images/mean_[prefix]_func_bold_masked.png
 %
 %
 % :Example:

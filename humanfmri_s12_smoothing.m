@@ -27,6 +27,7 @@ function PREPROC = humanfmri_s12_smoothing(subject_code, study_imaging_dir, vara
 %     PREPROC.s_func_bold_files
 %     PREPROC.s_func_reference_file
 %     PREPROC.mean_s_func_bold_files
+%     saves qc_images/mean_[prefix]_func_bold_masked.png
 %
 %
 % :Example:
