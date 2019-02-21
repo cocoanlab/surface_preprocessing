@@ -82,6 +82,9 @@ for i = 1:length(varargin)
     end
 end
 
+setenv('DYLD_LIBRARY_PATH', [getenv('FREESURFER_HOME') '/lib/gcc/lib' ':/opt/X11/lib/flat_namespace']);
+maxNumCompThreads(ncpu);
+
 if regexp(hostname, ['\w*' 'hebenula.local' '\w*'])
     fprintf('Currently working on Habenula!\n');
     rootdir = '/Volumes/habenula';
@@ -118,7 +121,5 @@ if add_others
     addpath(genpath(fullfile(rscdir, 'fmri_toolboxes/BCT')));
 end
 
-setenv('DYLD_LIBRARY_PATH', [getenv('FREESURFER_HOME') '/lib/gcc/lib' ':/opt/X11/lib/flat_namespace']);
-maxNumCompThreads(ncpu);
 
 end
