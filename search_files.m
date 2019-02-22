@@ -62,6 +62,7 @@ for depth_i = 1:maxdepth
         end
     end
 end
-flist = cellstr(strcat(cat(1, dirout.folder), '/', cat(1, dirout.name)));
+flist = strcat({dirout.folder}, '/', {dirout.name});
+flist = flist(:); % vectorize
 
 end
