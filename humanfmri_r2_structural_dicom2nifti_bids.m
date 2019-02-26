@@ -1,11 +1,11 @@
-function PREPROC = humanfmri_r2_anatomical_dicom2nifti_bids(subject_code, study_imaging_dir)
+function PREPROC = humanfmri_r2_structural_dicom2nifti_bids(subject_code, study_imaging_dir)
 
-% This function convert the anatomical dicom files into nifti and json files.
+% This function convert the structural dicom files into nifti and json files.
 %
 %
 % :Usage:
 % ::
-%     PREPROC = humanfmri_r2_anatomical_dicom2nifti_bids(subject_code, study_imaging_dir)
+%     PREPROC = humanfmri_r2_structural_dicom2nifti_bids(subject_code, study_imaging_dir)
 %
 %
 % :Input:

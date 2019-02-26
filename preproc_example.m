@@ -148,7 +148,7 @@ for sj_num = subjects
     
     %% R-2. Dicom to NIFTI: structural
     
-    PREPROC = humanfmri_r2_anatomical_dicom2nifti_bids(subject_code, study_imaging_dir);
+    PREPROC = humanfmri_r2_structural_dicom2nifti_bids(subject_code, study_imaging_dir);
     
     %% R-3. Dicom to nifti: functional
     
