@@ -64,7 +64,7 @@ for i = 1:numel(PREPROC.dicom_anat_dir)
     [~, anattype] = fileparts(PREPROC.dicom_anat_dir{i});
     fprintf('\n\nAnatomical image type: %s\n\n', anattype);
     
-    dicom_imgs = search_files(fullfile(PREPROC.dicom_anat_dir{i}, '*.IMA'), 3);
+    dicom_imgs = search_files(fullfile(PREPROC.dicom_anat_dir{i}, '*.IMA'), 'maxdepth', 3);
     
     dicm2nii(dicom_imgs, PREPROC.raw_anat_dir, 4, 'save_json');
     

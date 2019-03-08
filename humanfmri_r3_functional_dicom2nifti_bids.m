@@ -121,7 +121,7 @@ for i = 1:numel(PREPROC.dicom_func_bold_dir)
         taskname = functype(regexp_start+length('task-'):regexp_end-length('_run-'));
         fprintf('\n\nFunctional image type: %s\n\n', taskname);
         
-        dicom_imgs = search_files(fullfile(PREPROC.dicom_func_bold_dir{i}, '*.IMA'), 3);
+        dicom_imgs = search_files(fullfile(PREPROC.dicom_func_bold_dir{i}, '*.IMA'), 'maxdepth', 3);
         [~, temp_dicom_dir] = system('mktemp -d');
         temp_dicom_dir = strtrim(temp_dicom_dir);
         
@@ -177,7 +177,7 @@ for i = 1:numel(PREPROC.dicom_func_bold_dir)
             
             [~, functype] = fileparts(PREPROC.dicom_func_sbref_dir{i});
             
-            dicom_imgs = search_files(fullfile(PREPROC.dicom_func_sbref_dir{i}, '*.IMA'), 3);
+            dicom_imgs = search_files(fullfile(PREPROC.dicom_func_sbref_dir{i}, '*.IMA'), 'maxdepth', 3);
             
             dicm2nii(dicom_imgs, PREPROC.raw_func_dir, 4, 'save_json', 'taskname', taskname);
             

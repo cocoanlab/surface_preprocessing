@@ -49,7 +49,7 @@ function change_PREPROC(PREPROC_path, orig_basedir, new_basedir)
 
 
 fprintf('\n');
-PREPROC_list = search_files(PREPROC_path, 2);
+PREPROC_list = search_files(PREPROC_path, 'maxdepth', 3);
 for i = 1:numel(PREPROC_list)
     fprintf('Converting basedir of PREPROC.mat:   %s\n', PREPROC_list{i});
     load(PREPROC_list{i}, 'PREPROC');

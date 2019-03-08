@@ -64,7 +64,7 @@ for i = 1:numel(PREPROC.dicom_fmap_dir)
     [~, fmaptype] = fileparts(PREPROC.dicom_fmap_dir{i});
     fprintf('\n\nFieldmap image type: %s\n\n', fmaptype);
     
-    dicom_imgs = search_files(fullfile(PREPROC.dicom_fmap_dir{i}, '*.IMA'), 3);
+    dicom_imgs = search_files(fullfile(PREPROC.dicom_fmap_dir{i}, '*.IMA'), 'maxdepth', 3);
     [~, temp_dicom_dir] = system('mktemp -d');
     temp_dicom_dir = strtrim(temp_dicom_dir);
     

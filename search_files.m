@@ -88,8 +88,5 @@ flist = flist(:); % vectorize
 if dochar
     flist = char(flist);
 end
-    
-end
-
 
 end
