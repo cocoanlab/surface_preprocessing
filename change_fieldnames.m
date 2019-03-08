@@ -1,4 +1,4 @@
-function new_struct = renamefields(old_struct, oldnames, newnames, ~) % ~ noerror
+function new_struct = change_fieldnames(old_struct, oldnames, newnames, ~) % ~ noerror
 % 2017-07-09  Matlab2006+  Copyright (c) 2017, W J Whiten  BSD License
 
 if nargin == 4

@@ -121,6 +121,13 @@ system(['export FSLOUTPUTTYPE=NIFTI; fslchfiletype NIFTI ' PREPROC.anat_referenc
 system(['export FSLOUTPUTTYPE=NIFTI; fslchfiletype NIFTI ' PREPROC.anat_reference_file_warpfield '.gz']);
 system(['export FSLOUTPUTTYPE=NIFTI; fslchfiletype NIFTI ' PREPROC.anat_reference_file_invwarpfield '.gz']);
 
+% Generate GM segmentation using wmparc output from CIFTIFY
+PREPROC.anat_reference_file_gmseg = fullfile(PREPROC.preproc_anat_dir, 'anat_reference_gmseg.nii');
+system(['mri_binarize' ...
+    ' --i ' fullfile(PREPROC.cifti_dir, PREPROC.subject_code, 'T1w', 'aparc+aseg.nii.gz') ...
+    ' --gm' ...
+    ' --o ' PREPROC.anat_reference_file_gmseg]);
+
 % Generate WM segmentation using wmparc output from CIFTIFY
 % ''' use the wmparc file in the anat folder to define the wm mask
 %     will do so by combining
@@ -207,6 +214,7 @@ for i = 1:5
         break;
     end
 end
+
 
 % Generate CSF segmentation using wmparc output from CIFTIFY
 % ''' use the wmparc file in the anat folder to define the csf mask
