@@ -1,4 +1,4 @@
-function [flist, search_path, error_flag] = search_files(fname, maxdepth)
+function [flist, search_path, error_flag] = search_files(fname, varargin)
 
 % The function search files from the specified path and name.
 %
@@ -11,7 +11,12 @@ function [flist, search_path, error_flag] = search_files(fname, maxdepth)
 % :Input:
 % ::
 %   - fname              search path to files.
-%   - maxdepth           maximum depth of search.
+%
+%
+% :Optional Input:
+% ::
+%   - maxdepth           maximum depth of search. (default: 1)
+%   - char               output char array. (default: cell array)
 %
 %
 % :Output:
@@ -46,23 +51,45 @@ function [flist, search_path, error_flag] = search_files(fname, maxdepth)
 
 
 error_flag = 0;
-flist = [];
+flist = []; 
+maxdepth = 1;
+dochar = false;
 
+for i = 1:length(varargin)
+    if ischar(varargin{i})
+        switch varargin{i}
+            case {'maxdepth'}
+                maxdepth = varargin{i+1};
+            case {'char'}
+                dochar = true;
+        end
+    end
+end
+
+    
 [pathstr, name, ext] = fileparts(fname);
 for depth_i = 1:maxdepth
     search_path = [pathstr '/' repmat('*/', 1, depth_i - 1) name ext];
-    dirout = dir(search_path);
-    if ~isempty(dirout)
-        break
-    else
+    [~, flist] = system(['for file in ' search_path '; do echo $file; done']);
+    flist(end) = []; % delete the last '\n'
+    if strcmp(flist, search_path) % cannot find files, so only the search path was out
         if depth_i == maxdepth
             warning('Failed to search files.');
             error_flag = 1;
             return;
         end
+    else
+        break
     end
 end
-flist = strcat({dirout.folder}, '/', {dirout.name});
+
+flist = strsplit(flist, '\n');
 flist = flist(:); % vectorize
+if dochar
+    flist = char(flist);
+end
+    
+end
+
 
 end
