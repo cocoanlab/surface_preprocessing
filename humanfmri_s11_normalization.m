@@ -143,10 +143,10 @@ for i = 1:numel(PREPROC.func_bold_files)
             fprintf('Warping functional reference image to MNI space...\n');
             PREPROC.w_func_reference_file = fullfile(PREPROC.preproc_func_dir, 'normalized_to_MNI_func_reference.nii');
 %             PREPROC.w_func_reference_file_masked = fullfile(PREPROC.preproc_func_dir, 'normalized_to_MNI_func_reference_masked.nii');
-            if contains(PREPROC.current_step_letter, 'dc')
+            if regexp(PREPROC.current_step_letter, 'dc')
                 func_ref = PREPROC.dc_func_reference_file_masked;
             else
-                if contains(PREPROC.current_step_letter, 'r')
+                if regexp(PREPROC.current_step_letter, 'r')
                     func_ref = PREPROC.func_reference_file_masked;
                 end
             end

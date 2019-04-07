@@ -84,10 +84,10 @@ fprintf('Step 1: Registering EPI to T1 using FSL (BBR cost function)...\n');
 
 % Pre-alignment
 fprintf('Pre-alignment...\n');
-if contains(PREPROC.current_step_letter, 'dc')
+if regexp(PREPROC.current_step_letter, 'dc')
     func_ref = PREPROC.dc_func_reference_file;
 else
-    if contains(PREPROC.current_step_letter, 'r')
+    if regexp(PREPROC.current_step_letter, 'r')
         func_ref = PREPROC.func_reference_file;
     end
 end

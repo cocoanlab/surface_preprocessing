@@ -105,10 +105,10 @@ if numel(tr) == 1
 end
 tr = tr(:);
 
-if contains(PREPROC.current_step_letter, 'dc')
+if regexp(PREPROC.current_step_letter, 'dc')
     func_ref_mask = PREPROC.dc_func_reference_file_binarymask;
 else
-    if contains(PREPROC.current_step_letter, 'r')
+    if regexp(PREPROC.current_step_letter, 'r')
         func_ref_mask = PREPROC.func_reference_file_binarymask;
     end
 end
