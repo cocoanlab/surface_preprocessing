@@ -27,7 +27,8 @@ function PREPROC = humanfmri_s9_ICA_AROMA(subject_code, study_imaging_dir, ica_a
 %                               or {'200', '100', '200'} [for each run])
 %                        if not specified, it is automatically estimated by
 %                        melodic algorithm.
-%   - n_thread            the number of threads for ANTs (Default: 1)
+%   - n_thread           the number of threads for ANTs (Default: 1)
+%   - filt_on_sm         Filter noise-ICs on smoothed data (Default: false)
 %
 %
 % :Output:
@@ -69,6 +70,7 @@ run_num = NaN;
 fwhm = 5;
 n_dim = {0};
 n_thread = 1;
+filt_on_sm = false;
 
 for i = 1:length(varargin)
     if ischar(varargin{i})
@@ -85,6 +87,8 @@ for i = 1:length(varargin)
                 end
             case {'n_thread'}
                 n_thread = varargin{i+1};
+            case {'filt_on_sm'}
+                filt_on_sm = true;
         end
     end
 end
@@ -93,7 +97,11 @@ end
 PREPROC = save_load_PREPROC(fullfile(study_imaging_dir, 'preprocessed', subject_code), 'load'); % load PREPROC
 print_header('ICA-AROMA', PREPROC.subject_code);
 PREPROC.current_step = 's9';
-PREPROC.current_step_letter = ['i' PREPROC.current_step_letter];
+if filt_on_sm
+    PREPROC.current_step_letter = ['is' PREPROC.current_step_letter];
+else
+    PREPROC.current_step_letter = ['i' PREPROC.current_step_letter];
+end
 
 if numel(n_dim) == 1
     n_dim = repmat(n_dim, numel(PREPROC.func_bold_files), 1);
@@ -171,16 +179,20 @@ for i = 1:numel(PREPROC.func_bold_files)
                 ' -den ' 'no' ...
                 ' -o ' PREPROC.ica_aroma_dir{i}]);
         end
-        system(['rm -r ' temp_sm_dir]);
         motion_ICs = importdata(fullfile(PREPROC.ica_aroma_dir{i}, 'classified_motion_ICs.txt'));
         motion_ICs_str = regexprep(num2str(motion_ICs, '%d,'), ',\s+', ',');
         motion_ICs_str = ['"' motion_ICs_str(1:end-1) '"'];
         PREPROC.i_func_bold_files{i, 1} = fullfile(PREPROC.preproc_func_dir, [PREPROC.current_step_letter b '.nii']);
+        if filt_on_sm
+            input_dat = fullfile(temp_sm_dir, ['temp_sm_' b '.nii']);
+        else
+            input_dat = PREPROC.dc_func_bold_files{i};
+        end
         system(['export FSLOUTPUTTYPE=NIFTI;' ...
             ...
             'fsl_regfilt' ...
             ' -v' ...
-            ' --in=' PREPROC.dc_func_bold_files{i} ...
+            ' --in=' input_dat ...
             ' --design=' fullfile(PREPROC.ica_aroma_dir{i}, 'melodic.ica', 'melodic_mix') ...
             ' --mask=' func_ref_mask ... % Output will be masked!!!
             ' --filter=' motion_ICs_str ...
@@ -195,6 +207,8 @@ for i = 1:numel(PREPROC.func_bold_files)
             ' ' PREPROC.i_func_bold_files{i} ...
             ' -Tmean' ...
             ' ' PREPROC.mean_i_func_bold_files{i}]);
+        
+        system(['rm -r ' temp_sm_dir]);
         
     end
     
