@@ -141,8 +141,8 @@ for i = 1:numel(PREPROC.func_bold_files)
         end
         
         if do_wmcsf
-            WM_dat = fmri_data(PREPROC.i_func_bold_files{i}, PREPROC.coregistered_wmseg);
-            CSF_dat = fmri_data(PREPROC.i_func_bold_files{i}, PREPROC.coregistered_csfseg);
+            WM_dat = fmri_data(PREPROC.i_func_bold_files{i}, PREPROC.coregistered_wmseg_nuisance_ero);
+            CSF_dat = fmri_data(PREPROC.i_func_bold_files{i}, PREPROC.coregistered_csfseg_nuisance_ero);
             switch wmcsf_method
                 case 'mean'
                     fprintf('*** WM/CSF: Mean signal ***\n');
