@@ -105,11 +105,15 @@ if numel(tr) == 1
 end
 tr = tr(:);
 
-if regexp(PREPROC.current_step_letter, 'dc')
-    func_ref_mask = PREPROC.dc_func_reference_file_binarymask;
+if regexp(PREPROC.current_step_letter, 'w')
+    func_ref_mask = '$FSLDIR/data/standard/MNI152_T1_2mm_brain_mask.nii.gz';
 else
-    if regexp(PREPROC.current_step_letter, 'r')
-        func_ref_mask = PREPROC.func_reference_file_binarymask;
+    if regexp(PREPROC.current_step_letter, 'dc')
+        func_ref_mask = PREPROC.dc_func_reference_file_binarymask;
+    else
+        if regexp(PREPROC.current_step_letter, 'r')
+            func_ref_mask = PREPROC.func_reference_file_binarymask;
+        end
     end
 end
 
@@ -141,8 +145,15 @@ for i = 1:numel(PREPROC.func_bold_files)
         end
         
         if do_wmcsf
-            WM_dat = fmri_data(PREPROC.i_func_bold_files{i}, PREPROC.coregistered_wmseg_nuisance_ero);
-            CSF_dat = fmri_data(PREPROC.i_func_bold_files{i}, PREPROC.coregistered_csfseg_nuisance_ero);
+            if regexp(PREPROC.current_step_letter, 'w')
+                wm_mask = which('canonical_white_matter.img');
+                csf_mask = which('canonical_ventricles.img');
+            else
+                wm_mask = PREPROC.coregistered_wmseg_nuisance_ero;
+                csf_mask = PREPROC.coregistered_csfseg_nuisance_ero;
+            end
+            WM_dat = fmri_data(PREPROC.i_func_bold_files{i}, wm_mask);
+            CSF_dat = fmri_data(PREPROC.i_func_bold_files{i}, csf_mask);
             switch wmcsf_method
                 case 'mean'
                     fprintf('*** WM/CSF: Mean signal ***\n');
