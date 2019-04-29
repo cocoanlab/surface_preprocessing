@@ -154,8 +154,8 @@ for i = 1:numel(PREPROC.func_bold_files)
             end
             [~, temp_denoising_dir] = system('mktemp -d');
             temp_denoising_dir = strtrim(temp_denoising_dir);
-            WM_roi = fullfile(temp_denoising_dir, 'WM_dat.1D');
-            CSF_roi = fullfile(temp_denoising_dir, 'CSF_dat.1D');
+            WM_roi = fullfile(temp_denoising_dir, 'WM_roi.1D');
+            CSF_roi = fullfile(temp_denoising_dir, 'CSF_roi.1D');
             system(['3dmaskdump' ...
                 ' -noijk' ...
                 ' -mask ' wm_mask ...
