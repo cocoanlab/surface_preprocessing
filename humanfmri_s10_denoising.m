@@ -152,8 +152,8 @@ for i = 1:numel(PREPROC.func_bold_files)
                 wm_mask = PREPROC.coregistered_wmseg_nuisance_ero;
                 csf_mask = PREPROC.coregistered_csfseg_nuisance_ero;
             end
-            WM_dat = fmri_data(PREPROC.i_func_bold_files{i}, wm_mask);
-            CSF_dat = fmri_data(PREPROC.i_func_bold_files{i}, csf_mask);
+            WM_dat = spm_read_vols(PREPROC.i_func_bold_files{i}, wm_mask);
+            CSF_dat = spm_read_vols(PREPROC.i_func_bold_files{i}, csf_mask);
             switch wmcsf_method
                 case 'mean'
                     fprintf('*** WM/CSF: Mean signal ***\n');
