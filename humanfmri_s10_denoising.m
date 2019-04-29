@@ -166,8 +166,8 @@ for i = 1:numel(PREPROC.func_bold_files)
                 ' -mask ' csf_mask ...
                 ' ' PREPROC.i_func_bold_files{i} ...
                 ' > ' CSF_roi]);
-            WM_dat = importdata(WM_roi)';
-            CSF_dat = importdata(CSF_roi)';
+            WM_dat = importdata(WM_roi);
+            CSF_dat = importdata(CSF_roi);
             system(['rm -r ' temp_denoising_dir]);
                 
             switch wmcsf_method
