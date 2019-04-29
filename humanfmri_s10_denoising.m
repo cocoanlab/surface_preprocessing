@@ -175,6 +175,8 @@ for i = 1:numel(PREPROC.func_bold_files)
                         1, CSF_PC50_idx, sum(CSF_PC_explained(1:CSF_PC50_idx)));
                     nuisance_mat = [nuisance_mat WM_PC(:,1:WM_PC50_idx) CSF_PC(:,1:CSF_PC50_idx)];
             end
+            WM_dat = [];
+            CSF_dat = [];
         end
         
         if do_custom
