@@ -152,22 +152,38 @@ for i = 1:numel(PREPROC.func_bold_files)
                 wm_mask = PREPROC.coregistered_wmseg_nuisance_ero;
                 csf_mask = PREPROC.coregistered_csfseg_nuisance_ero;
             end
-            WM_dat = fmri_data(PREPROC.i_func_bold_files{i}, wm_mask);
-            CSF_dat = fmri_data(PREPROC.i_func_bold_files{i}, csf_mask);
+            [~, temp_denoising_dir] = system('mktemp -d');
+            temp_denoising_dir = strtrim(temp_denoising_dir);
+            WM_roi = fullfile(temp_denoising_dir, 'WM_dat.1D');
+            CSF_roi = fullfile(temp_denoising_dir, 'WM_dat.1D');
+            system(['3dmaskdump' ...
+                ' -noijk' ...
+                ' -mask ' wm_mask ...
+                ' ' PREPROC.i_func_bold_files{i} ...
+                ' > ' WM_roi]);
+            system(['3dmaskdump' ...
+                ' -noijk' ...
+                ' -mask ' csf_mask ...
+                ' ' PREPROC.i_func_bold_files{i} ...
+                ' > ' CSF_roi]);
+            WM_dat = importdata(WM_roi)';
+            CSF_dat = importdata(CSF_roi)';
+            system(['rm -r ' temp_denoising_dir]);
+                
             switch wmcsf_method
                 case 'mean'
                     fprintf('*** WM/CSF: Mean signal ***\n');
-                    nuisance_mat = [nuisance_mat mean(WM_dat.dat)' mean(CSF_dat.dat)'];
+                    nuisance_mat = [nuisance_mat mean(WM_dat)' mean(CSF_dat)'];
                 case 'acompcor'
                     fprintf('*** WM/CSF: aCompcor ***\n');
-                    [~, WM_PC] = pca(WM_dat.dat');
-                    [~, CSF_PC] = pca(CSF_dat.dat');
+                    [~, WM_PC] = pca(WM_dat');
+                    [~, CSF_PC] = pca(CSF_dat');
                     nuisance_mat = [nuisance_mat WM_PC(:,1:5) CSF_PC(:,1:5)];
                 case 'acompcor50'
                     fprintf('*** WM/CSF: aCompcor50 ***\n');
-                    [~, WM_PC, ~, ~, WM_PC_explained] = pca(WM_dat.dat');
+                    [~, WM_PC, ~, ~, WM_PC_explained] = pca(WM_dat');
                     WM_PC50_idx = find(cumsum(WM_PC_explained) >= 50, 1);
-                    [~, CSF_PC, ~, ~, CSF_PC_explained] = pca(CSF_dat.dat');
+                    [~, CSF_PC, ~, ~, CSF_PC_explained] = pca(CSF_dat');
                     CSF_PC50_idx = find(cumsum(CSF_PC_explained) >= 50, 1);
                     fprintf('WM: PC%.2d ~ PC%.2d explains %.4f percent of the variance.\n', ...
                         1, WM_PC50_idx, sum(WM_PC_explained(1:WM_PC50_idx)));
