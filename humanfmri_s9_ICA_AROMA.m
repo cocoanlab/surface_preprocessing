@@ -129,8 +129,8 @@ for i = 1:numel(PREPROC.func_bold_files)
         
         if regexp(PREPROC.current_step_letter, 's')
             
-            input_dat = PREPROC.w_func_bold_files{i};
-            mean_input_dat = PREPROC.mean_w_func_bold_files{i};
+            input_dat = PREPROC.s_func_bold_files{i};
+            mean_input_dat = PREPROC.mean_s_func_bold_files{i};
             input_denoising = input_dat;
             
         else
