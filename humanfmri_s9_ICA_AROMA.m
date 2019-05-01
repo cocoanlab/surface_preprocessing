@@ -240,7 +240,9 @@ for i = 1:numel(PREPROC.func_bold_files)
             ' -Tmean' ...
             ' ' PREPROC.mean_i_func_bold_files{i}]);
         
-        system(['rm -r ' temp_sm_dir]);
+        if exist('temp_sm_dir', 'var')
+            system(['rm -r ' temp_sm_dir]);
+        end
         
     end
     
