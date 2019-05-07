@@ -109,7 +109,7 @@ end
 n_dim = n_dim(:);
 
 if regexp(PREPROC.current_step_letter, 'w')
-    func_ref_mask = '$FSLDIR/data/standard/MNI152_T1_2mm_brain_mask.nii.gz';
+    func_ref_mask = which('MNI152_T1_2mm_brain_mask.nii');
 else
     if regexp(PREPROC.current_step_letter, 'dc')
         func_ref_mask = PREPROC.dc_func_reference_file_binarymask;
