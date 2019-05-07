@@ -19,6 +19,23 @@ function PREPROC = humanfmri_s10_denoising(subject_code, study_imaging_dir, vara
 % :Optional Input:
 % ::
 %   - run_num            runs to include. ex) [1 2 4 5], ...
+%   - detrend            maximum of polynomial degree to detrend. ex) 0 (none), 1 (linear), 2 (quadratic) ...
+%   - bandpass           bandpass filtering with preserving specified frequency.
+%                        ex) [0 0.1] (LPF 0.1Hz), [0.008 0.1] (BPF 0.008-0.1Hz), [0.008 1] (HPF 0.008Hz)
+%                        Note: this function uses the TR information in PREPROC data.
+%   - movement           regress motion-related signals out, followed by specified method.
+%                        ex) 'movement', '6p': regress out 6 (x, y, z, roll, pitch, yaw) motion parameters
+%                            'movement', '24p': regress out 24 (6p, diff, square, square of diff) motion parameters (Friston et al, 1996)
+%   - wmcsf              regress WM/CSF signals out, followed by specified method.
+%                        ex) 'wmcsf', 'mean': regress out mean signal from WM and CSF mask
+%                        ex) 'wmcsf', 'acompcor': regress out 5 PCs each from WM and CSF mask (Muschelli et al, 2014)
+%                        ex) 'wmcsf', 'acompcor50': regress out as many PCs as possible, until explained variance
+%                                                   reached 50% for each WM and CSF mask (Muschelli et al, 2014)
+%   - no_erode           do not use eroded WM/CSF mask, in case denoising is to be done after normalization
+%                        and thus canonical WM/CSF mask is to be used.
+%                        if denoising is to be done in native space, WM/CSF mask will always be the individually eroded masks.
+%   - custom_nuisance    additional custom nuisance regressors (voxels x variables).
+%   - addmean            add mean back after regression.
 %
 %
 % :Output:
@@ -60,6 +77,7 @@ bandpass = [0 9999];
 tr = {[]};
 do_movement = false;
 do_wmcsf = false;
+use_erode = true;
 do_custom = false;
 % Add 'censor'
 do_addmean = false;
@@ -74,17 +92,14 @@ for i = 1:length(varargin)
                 detrend_dim = varargin{i+1};
             case {'bandpass'}
                 bandpass = varargin{i+1};
-            case {'tr'}
-                tr = varargin{i+1};
-                if ~iscell(tr)
-                    tr = {tr};
-                end
             case {'movement'}
                 do_movement = true;
                 movement_method = varargin{i+1};
             case {'wmcsf'}
                 do_wmcsf = true;
                 wmcsf_method = varargin{i+1};
+            case {'no_erode'}
+                use_erode = false;
             case {'custom_nuisance'}
                 do_custom = true;
                 custom_nuisance = varargin{i+1};
@@ -99,11 +114,6 @@ PREPROC = save_load_PREPROC(fullfile(study_imaging_dir, 'preprocessed', subject_
 print_header('Denoising', PREPROC.subject_code);
 PREPROC.current_step = 's10';
 PREPROC.current_step_letter = ['n' PREPROC.current_step_letter];
-
-if numel(tr) == 1
-    tr = repmat(tr, numel(PREPROC.func_bold_files), 1);
-end
-tr = tr(:);
 
 if regexp(PREPROC.current_step_letter, 'w')
     func_ref_mask = which('MNI152_T1_2mm_brain_mask.nii');
@@ -146,8 +156,13 @@ for i = 1:numel(PREPROC.func_bold_files)
         
         if do_wmcsf
             if regexp(PREPROC.current_step_letter, 'w')
-                wm_mask = which('canonical_white_matter.img');
-                csf_mask = which('canonical_ventricles.img');
+                if use_erode
+                    wm_mask = which('canonical_white_matter_thrp5_ero1.nii');
+                    csf_mask = which('canonical_ventricles_thrp5_ero1.nii');
+                else
+                    wm_mask = which('canonical_white_matter_thrp5.nii');
+                    csf_mask = which('canonical_ventricles_thrp5.nii');
+                end
             else
                 wm_mask = PREPROC.coregistered_wmseg_nuisance_ero;
                 csf_mask = PREPROC.coregistered_csfseg_nuisance_ero;
@@ -215,7 +230,7 @@ for i = 1:numel(PREPROC.func_bold_files)
             ' -ort ' PREPROC.nuisance_files{i} ...
             ' -polort ' num2str(detrend_dim) ...
             ' -bandpass ' num2str(bandpass(1)) ' ' num2str(bandpass(2)) ...
-            ' -TR ' num2str(tr{i} / 1000) ...
+            ' -TR ' num2str(PREPROC.func_TR(i) / 1000) ...
             ' -prefix ' PREPROC.n_func_bold_files{i}]);
         
         if do_addmean
