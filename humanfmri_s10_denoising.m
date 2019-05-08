@@ -218,11 +218,6 @@ for i = 1:numel(PREPROC.func_bold_files)
         PREPROC.nuisance_files{i, 1} = fullfile(PREPROC.preproc_func_dir, ['nuisance_' b '.1D']);
         dlmwrite(PREPROC.nuisance_files{i}, nuisance_mat, 'delimiter', '\t');
         
-        if isempty(tr{i})
-            load(PREPROC.func_bold_dicomheader_files{i});
-            tr{i} = h.RepetitionTime; % msec
-        end
-        
         system(['3dTproject' ...
             ' -verb' ...
             ' -input ' PREPROC.i_func_bold_files{i} ...
