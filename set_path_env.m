@@ -109,6 +109,12 @@ elseif regexp(hostname, ['\w*' 'JaeJoongui-MacBook-Pro.local' '\w*'])
     basedir = fullfile(rootdir, 'hbmnas');
     rscdir = fullfile(rootdir, 'Resource');
     gitdir = fullfile(rootdir, 'github');
+elseif regexp(hostname, ['\w*' 'Wissen.local' '\w*'])
+    fprintf('Currently working on Wissen!\n');
+    rootdir = '/Volumes/wissen';
+    basedir = fullfile(rootdir, 'dropbox');
+    rscdir = fullfile(basedir, 'Resources');
+    gitdir = fullfile(rootdir, 'github');
 else
     error('No matching hostname.');
 end
