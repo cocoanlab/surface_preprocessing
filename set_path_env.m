@@ -88,13 +88,13 @@ maxNumCompThreads(ncpu);
 if regexp(hostname, ['\w*' 'hebenula.local' '\w*'])
     fprintf('Currently working on Habenula!\n');
     rootdir = '/Volumes/habenula';
-    basedir = fullfile(rootdir, 'hbmnas');
+    basedir = fullfile(rootdir, 'dropbox');
     rscdir = fullfile(rootdir, 'Resource');
     gitdir = fullfile(rootdir, 'github');
 elseif regexp(hostname, ['\w*' 'cocoanui-iMac-Pro4.local' '\w*'])
     fprintf('Currently working on alita!\n');
     rootdir = '/Volumes/alita';
-    basedir = fullfile(rootdir, 'hbmnas');
+    basedir = fullfile(rootdir, 'dropbox');
     rscdir = fullfile(rootdir, 'Resource');
     gitdir = fullfile(rootdir, 'github');
 elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
@@ -106,7 +106,7 @@ elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
 elseif regexp(hostname, ['\w*' 'JaeJoongui-MacBook-Pro.local' '\w*'])
     fprintf('Currently working on JJ macbook!\n');
     rootdir = '/Users/jaejoonglee';
-    basedir = fullfile(rootdir, 'hbmnas');
+    basedir = fullfile(rootdir, 'Dropbox');
     rscdir = fullfile(rootdir, 'Resource');
     gitdir = fullfile(rootdir, 'github');
 elseif regexp(hostname, ['\w*' 'Wissen.local' '\w*'])
