@@ -42,7 +42,7 @@ E) Preprocessing functional data
 ## Dependency
 
 1. CanlabCore: [https://github.com/canlab/CanlabCore](https://github.com/canlab/CanlabCore)
-2. dicm2nii: ([https://github.com/xiangruili/dicm2nii](https://github.com/xiangruili/dicm2nii)): We modified the original toolbox a little bit to make the output data fully BIDS-compatible. For this reason, please use the dicm2nii toolbox in our repository (in /external), instead of the original one. 
+2. dicm2nii: ([https://github.com/xiangruili/dicm2nii](https://github.com/xiangruili/dicm2nii)): We modified the original toolbox a little bit to make the output data fully BIDS-compatible. For this reason, please use the dicm2nii toolbox in our repository (in [https://github.com/cocoanlab/humanfmri_preproc_bids/tree/master/external](https://github.com/cocoanlab/humanfmri_preproc_bids/tree/master/external)), instead of the original one. 
 3. AFNI: [https://afni.nimh.nih.gov](https://afni.nimh.nih.gov)
 4. FSL: [https://fsl.fmrib.ox.ac.uk](https://fsl.fmrib.ox.ac.uk)
 5. ANTs: [https://github.com/ANTsX/ANTs](https://github.com/ANTsX/ANTs)
