@@ -34,7 +34,7 @@ E) Preprocessing functional data
   7) Use 3dTproject (AFNI) to remove nuisance signals (s10)
   8) Use applywarp (FSL, for surface-based preprocessing) or antsApplyTransforms (ANTs, for volume-based preprocessing) to normalize functional images to MNI space
   9) For volume-based preprocessing, use susan (FSL) to spatially smooth functional images
-  10) For surface-based preprocessing, use ciftify_subject_fmri (CIFTIFY, Dickie et al., 2019) to transform functional images to Conte69 32k CIFTI surface, and spatially smooth (both surface-based and volume-based smoothing) functional images
+  10) For surface-based preprocessing, use ciftify_subject_fmri (CIFTIFY, Dickie et al., 2019) to transform functional images to Conte69 32k CIFTI surface, and spatially smooth (based on both surface-based and volume-based smoothing) functional images
   
   Note: 8 can precede 6 and 7. depending on your purpose.
 
