@@ -2,7 +2,7 @@
 
 This repository includes a set of matlab functions for fMRI data preprocessing. Particularly, this pipeline was made for surface-based preprocessing, but it also can be used for volume-based preprocessing.
 
-Overall scheme of this pipeline is as follows:
+## Overall scheme of this pipeline
 
 A) Make directories for preprocessed data (r1)
 
@@ -39,15 +39,16 @@ E) Preprocessing functional data
   Note: 8) can precede 6) and 7). depending on your purpose.
 
 
-Dependency:
-  CanlabCore: [https://github.com/canlab/CanlabCore](https://github.com/canlab/CanlabCore)
-  dicm2nii: ([link](https://www.mathworks.com/matlabcentral/fileexchange/42997-dicom-to-nifti-converter--nifti-tool-and-viewer)): We modified the original toolbox a little bit to make the output data fully BIDS-compatible. For this reason, please use the dicm2nii toolbox in our repository (in /external), instead of the original one. 
-  AFNI: [https://afni.nimh.nih.gov](https://afni.nimh.nih.gov)
-  FSL: [https://fsl.fmrib.ox.ac.uk](https://fsl.fmrib.ox.ac.uk)
-  ANTs: [https://github.com/ANTsX/ANTs](https://github.com/ANTsX/ANTs)
-  Freesurfer: [https://surfer.nmr.mgh.harvard.edu](https://surfer.nmr.mgh.harvard.edu)
-  Connectome Workbench: [https://www.humanconnectome.org/software/connectome-workbench](https://www.humanconnectome.org/software/connectome-workbench)
-  ICA-AROMA: [https://github.com/rhr-pruim/ICA-AROMA](https://github.com/rhr-pruim/ICA-AROMA)
+## Dependency
+
+1. CanlabCore: [https://github.com/canlab/CanlabCore](https://github.com/canlab/CanlabCore)
+2. dicm2nii: ([link](https://www.mathworks.com/matlabcentral/fileexchange/42997-dicom-to-nifti-converter--nifti-tool-and-viewer)): We modified the original toolbox a little bit to make the output data fully BIDS-compatible. For this reason, please use the dicm2nii toolbox in our repository (in /external), instead of the original one. 
+3. AFNI: [https://afni.nimh.nih.gov](https://afni.nimh.nih.gov)
+4. FSL: [https://fsl.fmrib.ox.ac.uk](https://fsl.fmrib.ox.ac.uk)
+5. ANTs: [https://github.com/ANTsX/ANTs](https://github.com/ANTsX/ANTs)
+6. Freesurfer: [https://surfer.nmr.mgh.harvard.edu](https://surfer.nmr.mgh.harvard.edu)
+7. Connectome Workbench: [https://www.humanconnectome.org/software/connectome-workbench](https://www.humanconnectome.org/software/connectome-workbench)
+8. ICA-AROMA: [https://github.com/rhr-pruim/ICA-AROMA](https://github.com/rhr-pruim/ICA-AROMA)
   
   
 2019. 07. 20
