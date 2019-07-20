@@ -52,4 +52,5 @@ E) Preprocessing functional data
   
   
 Date: 2019. 07. 20
+
 Jae-Joong Lee
