@@ -47,7 +47,8 @@ fprintf('\n\n\n');
 
 %% Get directory names and set basic environment
 
-[rootdir, basedir, rscdir] = set_path_env('ncpu', 1);
+setenv('DYLD_LIBRARY_PATH', [getenv('FREESURFER_HOME') '/lib/gcc/lib' ':/opt/X11/lib/flat_namespace']);
+[rootdir, basedir, gitdir] = set_path_env('ncpu', 1);
 
 %% Study directory setting and load data
 
@@ -59,11 +60,11 @@ load(fullfile(basedir, 'projects/CAPS_project/data/CAPS2_dataset_171110.mat'));
 
 disdaq_n = 22; % Disdaq 22 images
 tr = 460; % TR 460 msec
-ciftify_basedir = fullfile(rscdir, 'fmri_toolboxes/CIFTIFY');
-oasis_dir = fullfile(rscdir, 'OASIS_template');
+ciftify_basedir = '/sas1/cocoanlab/Resources/fmri_toolboxes/CIFTIFY';
+oasis_dir = '/sas1/cocoanlab/Resources/OASIS_template';
 n_thread = 1;
 epi_enc_dir = 'ap';
-ica_aroma_basedir = fullfile(rscdir, 'fmri_toolboxes/ICA-AROMA');
+ica_aroma_basedir = '/sas1/cocoanlab/Resources/fmri_toolboxes/fmri_toolboxes/ICA-AROMA';
 n_dim = 200;
 fwhm = 5;
 n_detrend = 1;
