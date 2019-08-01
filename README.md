@@ -51,7 +51,7 @@ E) Preprocessing functional data
 8. ICA-AROMA: [https://github.com/rhr-pruim/ICA-AROMA](https://github.com/rhr-pruim/ICA-AROMA)
 
 If you have trouble with setting up the environemnt above, please see
-[https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit](https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit).
+[https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit](https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit) (note: under construction!).
   
   
   
