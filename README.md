@@ -6,7 +6,7 @@ This repository includes a set of matlab functions for fMRI data preprocessing. 
 
 A) Make directories for preprocessed data (r1)
 
-B) Convert DICOM images to NIFTI format (using dicm2nii.m, which was adapted from https://github.com/xiangruili/dicm2nii) (r2-r4)
+B) Convert DICOM images to NIFTI format (using dicm2nii.m, which was adapted from [https://github.com/xiangruili/dicm2nii](https://github.com/xiangruili/dicm2nii)) (r2-r4)
 
 C) Basic environmental setup for preprocessing (s1)
 
@@ -49,7 +49,9 @@ E) Preprocessing functional data
 6. Freesurfer: [https://surfer.nmr.mgh.harvard.edu](https://surfer.nmr.mgh.harvard.edu)
 7. Connectome Workbench: [https://www.humanconnectome.org/software/connectome-workbench](https://www.humanconnectome.org/software/connectome-workbench)
 8. ICA-AROMA: [https://github.com/rhr-pruim/ICA-AROMA](https://github.com/rhr-pruim/ICA-AROMA)
-  
+
+You can get detailed information on how to set up the environment at
+[https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit](https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit).
   
   
   
