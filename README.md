@@ -50,7 +50,7 @@ E) Preprocessing functional data
 7. Connectome Workbench: [https://www.humanconnectome.org/software/connectome-workbench](https://www.humanconnectome.org/software/connectome-workbench)
 8. ICA-AROMA: [https://github.com/rhr-pruim/ICA-AROMA](https://github.com/rhr-pruim/ICA-AROMA)
 
-You can get detailed information on how to set up the environment at
+If you have trouble with setting up the environemnt above, please see
 [https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit](https://docs.google.com/document/d/1wjh2fWaBKGc2XKo2alKkbHGLzOIGgxyBImCeL7VLI0o/edit).
   
   
