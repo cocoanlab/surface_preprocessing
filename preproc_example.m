@@ -47,7 +47,6 @@ fprintf('\n\n\n');
 
 %% Get directory names and set basic environment
 
-setenv('DYLD_LIBRARY_PATH', [getenv('FREESURFER_HOME') '/lib/gcc/lib' ':/opt/X11/lib/flat_namespace']);
 [rootdir, basedir, gitdir] = set_path_env('ncpu', 1);
 
 %% Study directory setting and load data

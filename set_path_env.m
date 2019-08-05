@@ -76,7 +76,7 @@ for i = 1:length(varargin)
     end
 end
 
-
+setenv('DYLD_LIBRARY_PATH', [getenv('FREESURFER_HOME') '/lib/gcc/lib' ':/opt/X11/lib/flat_namespace']);
 maxNumCompThreads(ncpu);
 
 if regexp(hostname, ['\w*' 'hebenula.local' '\w*'])
