@@ -82,6 +82,8 @@ print_header('Anatomical segmentation and normalization', PREPROC.subject_code);
 PREPROC.current_step = 's4';
 PREPROC.current_step_letter = PREPROC.current_step_letter;
 
+PREPROC.anat_normalization_method = 'ANTS';
+
 % Skull stripping
 fprintf('Bias field correction and skull stripping...\n');
 PREPROC.anat_reference_file = fullfile(PREPROC.preproc_anat_dir, 'anat_reference.nii');

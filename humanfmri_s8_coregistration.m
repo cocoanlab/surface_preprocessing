@@ -114,7 +114,7 @@ system(['export FSLOUTPUTTYPE=NIFTI;' ...
     ' -schedule $FSLDIR/etc/flirtsch/bbr.sch' ...
     ' -out ' fullfile(PREPROC.preproc_func_dir, 'coregistered_EPI_to_T1_fslbbr.nii')]);
 
-if isfield(PREPROC, 'surfrecon_dir')
+if strcmp(PREPROC.anat_normalization_method, 'FSL')
     
     % Step 2: Refine registration of EPI to T1 using freesurfer (bbregister)
     fprintf('Step 2: Refining registration of EPI to T1 using freesurfer (bbregister)...\n');
@@ -194,7 +194,7 @@ if isfield(PREPROC, 'surfrecon_dir')
         ' -inverse' ...
         ' -omat ' PREPROC.transform_T1_to_EPI]); % T1 to EPI coregistration matrix!!!
 
-else
+elseif strcmp(PREPROC.anat_normalization_method, 'ANTS')
     
     PREPROC.transform_EPI_to_T1 = fullfile(PREPROC.preproc_func_dir, 'transform_EPI_to_T1.mat');
     system(['cp ' fullfile(PREPROC.preproc_func_dir, 'transform_EPI_to_T1_fslbbr.mat') ' ' PREPROC.transform_EPI_to_T1]);

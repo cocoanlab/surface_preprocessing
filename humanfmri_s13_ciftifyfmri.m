@@ -79,6 +79,10 @@ print_header('Converting functional data to CIFTI format', PREPROC.subject_code)
 PREPROC.current_step = 's13';
 PREPROC.current_step_letter = PREPROC.current_step_letter;
 
+if ~strcmp(PREPROC.anat_normalization_method, 'FSL')
+    error('Please run step ''s3'' before you run this function.')
+end
+
 for i = 1:numel(PREPROC.func_bold_files)
     
     if ~do_select_run || ismember(i, run_num)

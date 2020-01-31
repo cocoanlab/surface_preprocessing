@@ -60,6 +60,7 @@ function PREPROC = humanfmri_s3_ciftifysurf(subject_code, study_imaging_dir, cif
 
 
 fprintf('\n\n\n');
+
 PREPROC = save_load_PREPROC(fullfile(study_imaging_dir, 'preprocessed', subject_code), 'load'); % load PREPROC
 print_header('Converting surface to CIFTI format', PREPROC.subject_code);
 PREPROC.current_step = 's3';
