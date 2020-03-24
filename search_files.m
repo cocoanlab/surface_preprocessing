@@ -76,6 +76,7 @@ for depth_i = 1:maxdepth
         if depth_i == maxdepth
             warning('Failed to search files.');
             error_flag = 1;
+            flist = [];
             return;
         end
     else
