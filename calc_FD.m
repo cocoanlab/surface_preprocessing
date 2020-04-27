@@ -61,8 +61,8 @@ switch param_software
         mvmt_trans = mvmt_param(:,4:6);
         mvmt_rot = mvmt_param(:,1:3) * pi / 180; % degree
     case 'FSL'
-        mvmt_trans = mvmt_param(:,1:3);
-        mvmt_rot = mvmt_param(:,4:6); % radian
+        mvmt_trans = mvmt_param(:,4:6);
+        mvmt_rot = mvmt_param(:,1:3); % radian
     case 'SPM'
         mvmt_trans = mvmt_param(:,1:3);
         mvmt_rot = mvmt_param(:,4:6); % radian
