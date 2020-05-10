@@ -84,7 +84,7 @@ if regexp(hostname, ['\w*' 'hebenula.local' '\w*'])
     rootdir = '/Volumes/habenula';
     basedir = fullfile(rootdir, 'dropbox');
     gitdir = fullfile(rootdir, 'github');
-    if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); end
+    if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
     if add_spm12; addpath(genpath(fullfile(rootdir, 'Resource/spm12'))); end
 elseif regexp(hostname, ['\w*' 'cocoanui-iMac-Pro4.local' '\w*'])
@@ -92,7 +92,7 @@ elseif regexp(hostname, ['\w*' 'cocoanui-iMac-Pro4.local' '\w*'])
     rootdir = '/Volumes/alita';
     basedir = fullfile(rootdir, 'dropbox');
     gitdir = fullfile(rootdir, 'github');
-    if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); end
+    if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
     if add_spm12; addpath(genpath(fullfile(rootdir, 'Resource/spm12'))); end
 elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
@@ -100,7 +100,7 @@ elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
     rootdir = '/cocoanlab';
     basedir = fullfile(rootdir, 'habenula_sync2');
     gitdir = '/home/indaydreams/github';
-    if add_canlab; addpath(genpath('/sas1/cocoanlab/Resources/github/canlab')); rmpath(genpath('/sas1/cocoanlab/Resources/github/canlab/MediationToolbox/geom2d')); end
+    if add_canlab; addpath(genpath('/sas1/cocoanlab/Resources/github/canlab')); rmpath(genpath('/sas1/cocoanlab/Resources/github/canlab/MediationToolbox/geom2d')); rmpath(genpath('/sas1/cocoanlab/Resources/github/canlab/CanlabPrivate/preprocess')); end
     if add_cocoanlab; addpath(genpath('/sas1/cocoanlab/Resources/github/cocoanlab')); end
     if add_spm12; addpath(genpath('/sas1/cocoanlab/Resources/spm12')); end
 elseif regexp(hostname, ['\w*' 'JaeJoongui-MacBook-Pro.local' '\w*'])
@@ -108,7 +108,7 @@ elseif regexp(hostname, ['\w*' 'JaeJoongui-MacBook-Pro.local' '\w*'])
     rootdir = '/Users/jaejoonglee';
     basedir = fullfile(rootdir, 'dropbox');
     gitdir = fullfile(rootdir, 'github');
-    if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); end
+    if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
     if add_spm12; addpath(genpath(fullfile(rootdir, 'Resource/spm12'))); end
 else
