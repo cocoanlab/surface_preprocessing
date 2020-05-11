@@ -67,11 +67,12 @@ for i = 1:length(varargin)
 end
 
     
+flist = [];
 [pathstr, name, ext] = fileparts(fname);
 for depth_i = 1:maxdepth
     search_path = [pathstr '/' repmat('*/', 1, depth_i - 1) name ext];
-    [~, flist] = system(['for file in ' search_path '; do echo $file; done']);
-    flist(end) = []; % delete the last '\n'
+    [~, flist_part] = system(['for file in ' search_path '; do echo $file; done']);
+    flist_part(end) = []; % delete the last '\n'
     if strcmp(flist, search_path) % cannot find files, so only the search path was out
         if depth_i == maxdepth
             warning('Failed to search files.');
@@ -79,9 +80,8 @@ for depth_i = 1:maxdepth
             flist = [];
             return;
         end
-    else
-        break
     end
+    flist = [flist flist_part];
 end
 
 flist = strsplit(flist, '\n');
