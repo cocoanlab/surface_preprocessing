@@ -1,4 +1,4 @@
-function [flist, search_path, error_flag] = search_files(fname, varargin)
+function flist = search_files(fname, varargin)
 
 % The function search files from the specified path and name.
 %
@@ -22,8 +22,6 @@ function [flist, search_path, error_flag] = search_files(fname, varargin)
 % :Output:
 % ::
 %     flist              list of searched files.
-%     search_path        actual search path under maximal depth.
-%     error_flag         success/fail of search (0: success, 1: fail).
 %
 %
 % :Example:
@@ -73,15 +71,9 @@ for depth_i = 1:maxdepth
     search_path = [pathstr '/' repmat('*/', 1, depth_i - 1) name ext];
     [~, flist_part] = system(['for file in ' search_path '; do echo $file; done']);
     flist_part(end) = []; % delete the last '\n'
-    if strcmp(flist_part, search_path) % cannot find files, so only the search path was out
-        if depth_i == maxdepth
-            warning('Failed to search files.');
-            error_flag = 1;
-            flist = [];
-            return;
-        end
+    if ~strcmp(flist_part, search_path) % cannot find files, so only the search path was out
+        flist = [flist flist_part];
     end
-    flist = [flist flist_part];
 end
 
 flist = strsplit(flist, '\n');
