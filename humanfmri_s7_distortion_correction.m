@@ -116,20 +116,6 @@ if numel(epi_enc_dir) == 1
 end
 epi_enc_dir = epi_enc_dir(:);
 
-% Combine fieldmap images
-fprintf('Combining fieldmap images.\n');
-PREPROC.topup.fmap_combined_file = fullfile(PREPROC.preproc_fmap_dir, [PREPROC.subject_code '_dir-combined_epi.nii']);
-fmap_filelist = strcat(PREPROC.fmap_files, {' '});
-fmap_filelist = cat(2, fmap_filelist{:});
-system(['export FSLOUTPUTTYPE=NIFTI;' ...
-    ...
-    'fslmerge' ...
-    ' -t' ...
-    ' ' PREPROC.topup.fmap_combined_file ...
-    ' ' fmap_filelist]);
-
-% Extract acqusition parameters for TOPUP
-fprintf('Extracting acqusition parameters for TOPUP.\n');
 fmap_enc_dictionary = ... % LAS system! (radiological convention)
     {'x', 'rl', [1 0 0]; ...
     '-x', 'lr', [-1 0 0]; ...
@@ -138,67 +124,93 @@ fmap_enc_dictionary = ... % LAS system! (radiological convention)
     'z', 'is', [0 0 1]; ...
     '-z', 'si', [0 0 -1]};
 
-if isempty(dc_param_dat)
-    
-    for i = 1:numel(PREPROC.fmap_files)
-        
-        load(PREPROC.fmap_dicomheader_files{i});
-        
-        [regexp_start, regexp_end] = regexp(PREPROC.fmap_files{i}, 'dir-\w\w_epi');
-        fmap_enc_dir_label = PREPROC.fmap_files{i}(regexp_start+length('dir-'):regexp_end-length('_epi'));
-        if strcmp(fmap_enc_dictionary(:,1), h.UnwarpDirection) == strcmp(fmap_enc_dictionary(:,2), fmap_enc_dir_label)
-            fmap_enc_dir = fmap_enc_dictionary{strcmp(fmap_enc_dictionary(:,1), h.UnwarpDirection), 3};
-        else
-            error('Unidentifiable phase encoding direction of fieldmap images.')
+if ~isfield(PREPROC, 'topup')
+   
+    % Combine fieldmap images
+    fprintf('Combining fieldmap images.\n');
+    PREPROC.topup.fmap_combined_file = fullfile(PREPROC.preproc_fmap_dir, [PREPROC.subject_code '_dir-combined_epi.nii']);
+    fmap_filelist = strcat(PREPROC.fmap_files, {' '});
+    fmap_filelist = cat(2, fmap_filelist{:});
+    system(['export FSLOUTPUTTYPE=NIFTI;' ...
+        ...
+        'fslmerge' ...
+        ' -t' ...
+        ' ' PREPROC.topup.fmap_combined_file ...
+        ' ' fmap_filelist]);
+
+    % Extract acqusition parameters for TOPUP
+    fprintf('Extracting acqusition parameters for TOPUP.\n');
+
+    if isempty(dc_param_dat)
+
+        for i = 1:numel(PREPROC.fmap_files)
+
+            load(PREPROC.fmap_dicomheader_files{i});
+
+            [regexp_start, regexp_end] = regexp(PREPROC.fmap_files{i}, 'dir-\w\w_epi');
+            fmap_enc_dir_label = PREPROC.fmap_files{i}(regexp_start+length('dir-'):regexp_end-length('_epi'));
+            if strcmp(fmap_enc_dictionary(:,1), h.UnwarpDirection) == strcmp(fmap_enc_dictionary(:,2), fmap_enc_dir_label)
+                fmap_enc_dir = fmap_enc_dictionary{strcmp(fmap_enc_dictionary(:,1), h.UnwarpDirection), 3};
+            else
+                error('Unidentifiable phase encoding direction of fieldmap images.')
+            end
+
+            readout_time = h.ReadoutSeconds;
+            distort_num = h.NumberOfTemporalPositions;
+            dc_param_dat = [dc_param_dat; repmat([fmap_enc_dir readout_time], distort_num, 1)];
+
         end
-        
-        readout_time = h.ReadoutSeconds;
-        distort_num = h.NumberOfTemporalPositions;
-        dc_param_dat = [dc_param_dat; repmat([fmap_enc_dir readout_time], distort_num, 1)];
-        
+
+    end
+
+    PREPROC.topup.dc_param_file = fullfile(PREPROC.preproc_fmap_dir, ['dc_param_', PREPROC.subject_code '_combined_epi.txt']);
+    fid = fopen(PREPROC.topup.dc_param_file, 'wt');
+    fprintf(fid, [repmat('%.4f\t', 1, size(dc_param_dat, 2)), '\n'], dc_param_dat');
+    fclose(fid);
+    fprintf('\n\nAcqusition parameters for distortion correction:\n\n');
+    disp(array2table(dc_param_dat, 'VariableNames', {'R_L', 'P_A', 'I_S', 'ReadoutTime'}));
+
+    % Run TOPUP
+    fprintf('Running TOPUP to estimate distortion...\n');
+    PREPROC.topup.output_path = fullfile(PREPROC.preproc_fmap_dir, ['topup_output_', PREPROC.subject_code]);
+    PREPROC.topup.fieldmap_file = fullfile(PREPROC.preproc_fmap_dir, ['topup_fieldmap_', PREPROC.subject_code '.nii']);
+    PREPROC.topup.unwarped_file = fullfile(PREPROC.preproc_fmap_dir, ['topup_unwarped_', PREPROC.subject_code '.nii']);
+    PREPROC.topup.config_file = [getenv('FSLDIR') '/etc/flirtsch/b02b0.cnf'];
+    system(['export FSLOUTPUTTYPE=NIFTI;' ...
+        ...
+        'topup' ...
+        ' --verbose' ...
+        ' --imain=' PREPROC.topup.fmap_combined_file ...
+        ' --datain=' PREPROC.topup.dc_param_file ...
+        ' --config=' PREPROC.topup.config_file ...
+        ' --out=' PREPROC.topup.output_path ...
+        ' --fout=' PREPROC.topup.fieldmap_file ...
+        ' --iout=' PREPROC.topup.unwarped_file]);
+
+    % Take snapshot of fieldmap images before/after distortion correction
+    fprintf('Take snapshot of fieldmap images before/after TOPUP.\n');
+    j = 0;
+    for i = 1:numel(PREPROC.fmap_files)
+        [~, volinfo] = system(['echo $(fslval ' PREPROC.fmap_files{i} ' dim4)']);
+        num_vols = str2num(volinfo);
+        fmap_idx = (j+1):(j+num_vols);
+        [~, fmap_name] = fileparts(PREPROC.fmap_files{i});
+        topup_unwarped_png = fullfile(PREPROC.qcdir, ['topup_unwarped_' fmap_name '.png']);
+        topup_before_list = cellstr(strcat(PREPROC.topup.fmap_combined_file, ',', num2str(fmap_idx')));
+        topup_after_list = cellstr(strcat(PREPROC.topup.unwarped_file, ',', num2str(fmap_idx')));
+        canlab_preproc_show_montage([topup_before_list; topup_after_list], topup_unwarped_png);
+        drawnow;
+        close all;
+        j = max(fmap_idx);
     end
     
-end
-
-PREPROC.topup.dc_param_file = fullfile(PREPROC.preproc_fmap_dir, ['dc_param_', PREPROC.subject_code '_combined_epi.txt']);
-fid = fopen(PREPROC.topup.dc_param_file, 'wt');
-fprintf(fid, [repmat('%.4f\t', 1, size(dc_param_dat, 2)), '\n'], dc_param_dat');
-fclose(fid);
-fprintf('\n\nAcqusition parameters for distortion correction:\n\n');
-disp(array2table(dc_param_dat, 'VariableNames', {'R_L', 'P_A', 'I_S', 'ReadoutTime'}));
-
-% Run TOPUP
-fprintf('Running TOPUP to estimate distortion...\n');
-PREPROC.topup.output_path = fullfile(PREPROC.preproc_fmap_dir, ['topup_output_', PREPROC.subject_code]);
-PREPROC.topup.fieldmap_file = fullfile(PREPROC.preproc_fmap_dir, ['topup_fieldmap_', PREPROC.subject_code '.nii']);
-PREPROC.topup.unwarped_file = fullfile(PREPROC.preproc_fmap_dir, ['topup_unwarped_', PREPROC.subject_code '.nii']);
-PREPROC.topup.config_file = [getenv('FSLDIR') '/etc/flirtsch/b02b0.cnf'];
-system(['export FSLOUTPUTTYPE=NIFTI;' ...
-    ...
-    'topup' ...
-    ' --verbose' ...
-    ' --imain=' PREPROC.topup.fmap_combined_file ...
-    ' --datain=' PREPROC.topup.dc_param_file ...
-    ' --config=' PREPROC.topup.config_file ...
-    ' --out=' PREPROC.topup.output_path ...
-    ' --fout=' PREPROC.topup.fieldmap_file ...
-    ' --iout=' PREPROC.topup.unwarped_file]);
-
-% Take snapshot of fieldmap images before/after distortion correction
-fprintf('Take snapshot of fieldmap images before/after TOPUP.\n');
-j = 0;
-for i = 1:numel(PREPROC.fmap_files)
-    [~, volinfo] = system(['echo $(fslval ' PREPROC.fmap_files{i} ' dim4)']);
-    num_vols = str2num(volinfo);
-    fmap_idx = (j+1):(j+num_vols);
-    [~, fmap_name] = fileparts(PREPROC.fmap_files{i});
-    topup_unwarped_png = fullfile(PREPROC.qcdir, ['topup_unwarped_' fmap_name '.png']);
-    topup_before_list = cellstr(strcat(PREPROC.topup.fmap_combined_file, ',', num2str(fmap_idx')));
-    topup_after_list = cellstr(strcat(PREPROC.topup.unwarped_file, ',', num2str(fmap_idx')));
-    canlab_preproc_show_montage([topup_before_list; topup_after_list], topup_unwarped_png);
-    drawnow;
-    close all;
-    j = max(fmap_idx);
+else
+    
+    fprintf('Existing TOPUP files found.\n');
+    dc_param_dat = importdata(PREPROC.topup.dc_param_file);
+    fprintf('\n\nAcqusition parameters for distortion correction:\n\n');
+    disp(array2table(dc_param_dat, 'VariableNames', {'R_L', 'P_A', 'I_S', 'ReadoutTime'}));
+    
 end
 
 for i = 1:numel(PREPROC.func_bold_files)
