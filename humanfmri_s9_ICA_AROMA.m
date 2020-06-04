@@ -97,10 +97,16 @@ end
 PREPROC = save_load_PREPROC(fullfile(study_imaging_dir, 'preprocessed', subject_code), 'load'); % load PREPROC
 print_header('ICA-AROMA', PREPROC.subject_code);
 PREPROC.current_step = 's9';
-if filt_on_sm
-    PREPROC.current_step_letter = ['is' PREPROC.current_step_letter];
-else
+if regexp(PREPROC.current_step_letter, 's')
+    do_smoothed_input = true;
     PREPROC.current_step_letter = ['i' PREPROC.current_step_letter];
+else
+    do_smoothed_input = false;
+    if filt_on_sm
+        PREPROC.current_step_letter = ['is' PREPROC.current_step_letter];
+    else
+        PREPROC.current_step_letter = ['i' PREPROC.current_step_letter];
+    end
 end
 
 if numel(n_dim) == 1
@@ -127,7 +133,7 @@ for i = 1:numel(PREPROC.func_bold_files)
         fprintf('\n\nWorking on Run %d...\n\n', i);
         [~, b] = fileparts(PREPROC.func_bold_files{i});
         
-        if regexp(PREPROC.current_step_letter, 's')
+        if do_smoothed_input
             
             input_dat = PREPROC.s_func_bold_files{i};
             mean_input_dat = PREPROC.mean_s_func_bold_files{i};
