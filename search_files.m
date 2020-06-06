@@ -76,8 +76,12 @@ for depth_i = 1:maxdepth
     end
 end
 
-flist = strsplit(flist, '\n');
+if ~isempty(flist)
+    flist = strsplit(flist, '\n');
+end
+
 flist = flist(:); % vectorize
+
 if dochar
     flist = char(flist);
 end
