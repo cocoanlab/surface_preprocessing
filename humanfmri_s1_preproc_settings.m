@@ -136,7 +136,7 @@ for i = 1:numel(PREPROC.func_bold_files)
             
             % Select reference image
             PREPROC.func_reference_files{i, 1} = fullfile(PREPROC.preproc_func_dir, [b '_reference.nii']);
-            if exist(PREPROC.func_sbref_files{i}) % if SBRef exists, it is used as a reference image
+            if isfield(PREPROC, 'func_sbref_files') % if SBRef exists, it is used as a reference image
                 fprintf('Use SBRef image as reference.\n');
                 PREPROC.setting_reference_image{i, 1} = 'sbref';
                 system(['cp' ...
