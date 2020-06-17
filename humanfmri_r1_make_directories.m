@@ -5,7 +5,7 @@ function PREPROC = humanfmri_r1_make_directories(subject_code, study_imaging_dir
 %
 % :Usage:
 % ::
-%     PREPROC = humanfmri_r1_make_directories(subject_code, study_imaging_dir, func_tasks, varargin)
+%     PREPROC = humanfmri_r1_make_directories(subject_code, study_imaging_dir, varargin)
 %
 %
 % :Input:
@@ -13,13 +13,10 @@ function PREPROC = humanfmri_r1_make_directories(subject_code, study_imaging_dir
 %   - subject_code       the subject code (e.g., 'sub-caps001').
 %   - study_imaging_dir  the directory information for the study imaging data 
 %                        (e.g., '/Volumes/habenula/hbmnas/data/CAPS2/Imaging').
-%   - func_tasks         task names corresponding each run.
+%   - func_tasks         task names corresponding each data.
 %                        (e.g., func_tasks = {'CAPS', 'QUIN', 'ODOR'})
-%                        if some runs are missing, just fill in blanks.
-%                        (e.g., func_tasks = {'', 'QUIN', ''} <- only run 2!)
-%                        *** note: please match the task with exact run
-%                        number. if task 'abc' is done in run 3, then 'abc'
-%                        should be placed in index 3.
+%                        if some data are missing, just fill in blanks.
+%                        (e.g., func_tasks = {'', 'QUIN', ''} <- only data 2!)
 %
 %
 % :Optional Input:
@@ -30,6 +27,14 @@ function PREPROC = humanfmri_r1_make_directories(subject_code, study_imaging_dir
 %   - fmap_enc_dir       fieldmap encoding directions
 %                        default: {'ap', 'pa'}
 %   - no_update          do not update PREPROC.mat file
+%   - func_sess          session names corresponding each data.
+%                        (e.g., func_sess = {'visit1', 'visit2', 'visit3'})
+%                        runs without a specified func_task will be ignored.
+%                        (default: [])
+%   - func_runs          run number corresponding each data.
+%                        (e.g., func_runs = [1 2 3], or [1 1 2 2])
+%                        runs without a specified func_task will be ignored.
+%                        (default: 1 .. #func_tasks)
 %
 %
 % :Output:
@@ -74,6 +79,8 @@ make_sbref = true;
 make_fmap = true;
 fmap_enc_dir = {'ap', 'pa'};
 do_update = true;
+func_sess = [];
+func_runs = 1:numel(func_tasks);
 
 for i = 1:length(varargin)
     if ischar(varargin{i})
@@ -88,10 +95,13 @@ for i = 1:length(varargin)
                 fmap_enc_dir = varargin{i+1};
             case {'no_update'}
                 do_update = false;
+            case {'func_sess'}
+                func_sess = varargin{i+1};
+            case {'func_runs'}
+                func_runs = varargin{i+1};
         end
     end
 end
-
 
 subject_dir = fullfile(study_imaging_dir, 'raw', subject_code);
 if do_update && exist(fullfile(subject_dir, 'PREPROC.mat')) == 2 % do update & mat file exist
@@ -114,10 +124,15 @@ if make_T2
 end
 for i = 1:numel(func_tasks)
     if ~isempty(func_tasks{i})
-        PREPROC.dicom_func_bold_dir{i, 1} = fullfile(PREPROC.subject_dir, 'dicom', 'func', sprintf('task-%s_run-%02d_bold', func_tasks{i}, i));
+        if ~isempty(func_sess)
+            funcprefix = sprintf('ses-%s_task-%s_run-%02d', func_sess{i}, func_tasks{i}, func_runs(i));
+        else
+            funcprefix = sprintf('task-%s_run-%02d', func_tasks{i}, func_runs(i));
+        end
+        PREPROC.dicom_func_bold_dir{i, 1} = fullfile(PREPROC.subject_dir, 'dicom', 'func', sprintf('%s_bold', funcprefix));
         system(['mkdir -p ' PREPROC.dicom_func_bold_dir{i}]);
         if make_sbref
-            PREPROC.dicom_func_sbref_dir{i, 1} = fullfile(PREPROC.subject_dir, 'dicom', 'func', sprintf('task-%s_run-%02d_sbref', func_tasks{i}, i));
+            PREPROC.dicom_func_sbref_dir{i, 1} = fullfile(PREPROC.subject_dir, 'dicom', 'func', sprintf('%s_sbref', funcprefix));
             system(['mkdir -p ' PREPROC.dicom_func_sbref_dir{i}]);
         end
     end
