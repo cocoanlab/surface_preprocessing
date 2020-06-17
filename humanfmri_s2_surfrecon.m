@@ -91,7 +91,7 @@ if n_anat > 1
         ' -all']);
     
     system(['mv ' fullfile(temp_surf_dir, PREPROC.subject_code) ' ' PREPROC.surfrecon_dir]);
-    system(['rm ' temp_surf_dir]);
+    system(['rm -r ' temp_surf_dir]);
     
 else
 
