@@ -25,8 +25,9 @@ function PREPROC = humanfmri_s12_smoothing(subject_code, study_imaging_dir, vara
 % :Output:
 % ::
 %     PREPROC.s_func_bold_files
-%     PREPROC.s_func_reference_file
+%     PREPROC.s_func_reference_files
 %     PREPROC.mean_s_func_bold_files
+%     saves qc_images/sm_func_reference_masked.png 
 %     saves qc_images/mean_[prefix]_func_bold_masked.png
 %
 %
@@ -77,27 +78,32 @@ print_header('Smoothing', PREPROC.subject_code);
 PREPROC.current_step = 's12';
 PREPROC.current_step_letter = ['s' PREPROC.current_step_letter];
 
-if regexp(PREPROC.current_step_letter, 'w')
-    func_ref = PREPROC.w_func_reference_file;
-    func_ref_mask = which('MNI152_T1_2mm_brain_mask.nii');
-else
-    if regexp(PREPROC.current_step_letter, 'dc')
-        func_ref = PREPROC.dc_func_reference_file;
-        func_ref_mask = PREPROC.dc_func_reference_file_binarymask;
-    else
-        if regexp(PREPROC.current_step_letter, 'r')
-            func_ref = PREPROC.func_reference_file;
-            func_ref_mask = PREPROC.func_reference_file_binarymask;
-        end
-    end
-end
-
 for i = 1:numel(PREPROC.func_bold_files)
     
     if ~do_select_run || ismember(i, run_num)
         
         fprintf('\n\nWorking on Run %d...\n\n', i);
         [~, b] = fileparts(PREPROC.func_bold_files{i});
+        
+        if PREPROC.ref_first_run
+            ref_run = 1;
+        else
+            ref_run = i;
+        end
+        if regexp(PREPROC.current_step_letter, 'w')
+            ref = PREPROC.w_func_reference_file{ref_run};
+            ref_binmask = which('MNI152_T1_2mm_brain_mask.nii');
+        else
+            if regexp(PREPROC.current_step_letter, 'dc')
+                ref = PREPROC.dc_func_reference_files{ref_run};
+                ref_binmask = PREPROC.dc_func_reference_files_binarymask{ref_run};
+            else
+                if regexp(PREPROC.current_step_letter, 'r')
+                    ref = PREPROC.func_reference_files{ref_run};
+                    ref_binmask = PREPROC.func_reference_files_binarymask{ref_run};
+                end
+            end
+        end
         
         if regexp(PREPROC.current_step_letter, 'w')
             input_dat = PREPROC.w_func_bold_files{i};
@@ -114,7 +120,7 @@ for i = 1:numel(PREPROC.func_bold_files)
         PREPROC.s_func_bold_files{i, 1} = fullfile(PREPROC.preproc_func_dir, [PREPROC.current_step_letter b '.nii']);
         [~, median_val] = system(['fslstats' ...
             ' ' mean_input_dat ...
-            ' -k ' func_ref_mask ...
+            ' -k ' ref_mask ...
             ' -p 50']); % get median value
         median_val = str2num(median_val);
         brightness_threshold = median_val * 0.75;
@@ -131,15 +137,16 @@ for i = 1:numel(PREPROC.func_bold_files)
             ' ' PREPROC.s_func_bold_files{i}]);
         system(['rm ' PREPROC.s_func_bold_files{i} '_usan_size.nii']);
         
-        if i == 1
+        if ~ (PREPROC.ref_first_run && i ~= 1)
+            
             fprintf('\n\nWorking on Reference image...\n\n');
             
             % Apply spatial smoothing
             fprintf('Applying spatial smoothing with FWHM %dmm kernel.\n', fwhm);
-            PREPROC.s_func_reference_file = fullfile(PREPROC.preproc_func_dir, 'smoothed_func_reference.nii');
+            PREPROC.s_func_reference_files{i, 1} = fullfile(PREPROC.preproc_func_dir, [b '_sm_reference.nii']);
             [~, median_val] = system(['fslstats' ...
-                ' ' func_ref ...
-                ' -k ' func_ref_mask ...
+                ' ' ref ...
+                ' -k ' ref_mask ...
                 ' -p 50']); % get median value
             median_val = str2num(median_val);
             brightness_threshold = median_val * 0.75;
@@ -147,11 +154,11 @@ for i = 1:numel(PREPROC.func_bold_files)
             system(['export FSLOUTPUTTYPE=NIFTI;' ...
                 ...
                 'susan' ...
-                ' ' func_ref ...
+                ' ' ref ...
                 ' ' num2str(brightness_threshold) ...
                 ' ' num2str(kernel_sigma) ...
                 ' 3 1 0' ... % 3-dimension, use median, don't use other image for edge detection
-                ' ' PREPROC.s_func_reference_file]);
+                ' ' PREPROC.s_func_reference_files{i}]);
         end
         
         % Save mean functional image
@@ -168,8 +175,13 @@ for i = 1:numel(PREPROC.func_bold_files)
     
 end
 
-% Take snapshot of warped mean functional images
-fprintf('Taking snapshot of warped mean functional images.\n');
+% Take snapshot of smoothed reference images
+fprintf('Taking snapshot of smoothed reference images.\n');
+canlab_preproc_show_montage(PREPROC.s_func_reference_files, fullfile(PREPROC.qcdir, 'sm_func_reference.png'));
+drawnow;
+
+% Take snapshot of smoothed mean functional images
+fprintf('Taking snapshot of smoothed mean functional images.\n');
 canlab_preproc_show_montage(PREPROC.mean_s_func_bold_files, fullfile(PREPROC.qcdir, ['mean_' PREPROC.current_step_letter '_func_bold.png']));
 drawnow;
 

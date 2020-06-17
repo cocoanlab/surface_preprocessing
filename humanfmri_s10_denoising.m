@@ -115,24 +115,29 @@ print_header('Denoising', PREPROC.subject_code);
 PREPROC.current_step = 's10';
 PREPROC.current_step_letter = ['n' PREPROC.current_step_letter];
 
-if regexp(PREPROC.current_step_letter, 'w')
-    func_ref_mask = which('MNI152_T1_2mm_brain_mask.nii');
-else
-    if regexp(PREPROC.current_step_letter, 'dc')
-        func_ref_mask = PREPROC.dc_func_reference_file_binarymask;
-    else
-        if regexp(PREPROC.current_step_letter, 'r')
-            func_ref_mask = PREPROC.func_reference_file_binarymask;
-        end
-    end
-end
-
 for i = 1:numel(PREPROC.func_bold_files)
     
     if ~do_select_run || ismember(i, run_num)
         
         fprintf('\n\nWorking on Run %d...\n\n', i);
         [~, b] = fileparts(PREPROC.func_bold_files{i});
+        
+        if PREPROC.ref_first_run
+            ref_run = 1;
+        else
+            ref_run = i;
+        end
+        if regexp(PREPROC.current_step_letter, 'w')
+            ref_binmask = which('MNI152_T1_2mm_brain_mask.nii');
+        else
+            if regexp(PREPROC.current_step_letter, 'dc')
+                ref_binmask = PREPROC.dc_func_reference_files_binarymask{ref_run};
+            else
+                if regexp(PREPROC.current_step_letter, 'r')
+                    ref_binmask = PREPROC.func_reference_files_binarymask{ref_run};
+                end
+            end
+        end
         
         % Setting
         PREPROC.n_func_bold_files{i, 1} = fullfile(PREPROC.preproc_func_dir, [PREPROC.current_step_letter b '.nii']);
@@ -164,8 +169,8 @@ for i = 1:numel(PREPROC.func_bold_files)
                     csf_mask = which('canonical_ventricles_thrp5.nii');
                 end
             else
-                wm_mask = PREPROC.coregistered_wmseg_nuisance_ero;
-                csf_mask = PREPROC.coregistered_csfseg_nuisance_ero;
+                wm_mask = PREPROC.coregistered_wmseg_nuisance_ero{i};
+                csf_mask = PREPROC.coregistered_csfseg_nuisance_ero{i};
             end
             [~, temp_denoising_dir] = system('mktemp -d');
             temp_denoising_dir = strtrim(temp_denoising_dir);
@@ -221,7 +226,7 @@ for i = 1:numel(PREPROC.func_bold_files)
         system(['3dTproject' ...
             ' -verb' ...
             ' -input ' PREPROC.i_func_bold_files{i} ...
-            ' -mask ' func_ref_mask ...
+            ' -mask ' ref_binmask ...
             ' -ort ' PREPROC.nuisance_files{i} ...
             ' -polort ' num2str(detrend_dim) ...
             ' -bandpass ' num2str(bandpass(1)) ' ' num2str(bandpass(2)) ...

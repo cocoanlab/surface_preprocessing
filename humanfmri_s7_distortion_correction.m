@@ -50,11 +50,12 @@ function PREPROC = humanfmri_s7_distortion_correction(subject_code, study_imagin
 %                  .unwarped_file
 %                  .config_file
 %     PREPROC.dc_func_bold_files
-%     PREPROC.dc_func_reference_file
-%     PREPROC.dc_func_reference_file_masked
-%     PREPROC.dc_func_reference_file_binarymask
+%     PREPROC.dc_func_reference_files
+%     PREPROC.dc_func_reference_files_masked
+%     PREPROC.dc_func_reference_files_binarymask
 %     PREPROC.mean_dc_func_bold_files
 %     PREPROC.mean_dc_func_bold_files_masked
+%     saves qc_images/dc_func_reference_masked.png 
 %     saves qc_images/mean_[prefix]_func_bold_masked.png
 %               
 %
@@ -249,46 +250,56 @@ for i = 1:numel(PREPROC.func_bold_files)
             ' -abs' ...
             ' ' PREPROC.dc_func_bold_files{i}]);
         
-        if i == 1
+        if ~ (PREPROC.ref_first_run && i ~= 1)
+            
             fprintf('\n\nWorking on Reference image...\n\n');
             
             % Run APPLYTOPUP
             fprintf('Correcting distortion by APPLYTOPUP...\n');
-            PREPROC.dc_func_reference_file = fullfile(PREPROC.preproc_func_dir, 'distortion_corrected_func_reference.nii');
+            PREPROC.dc_func_reference_files{i, 1} = fullfile(PREPROC.preproc_func_dir, [b '_dc_reference.nii']);
             system(['export FSLOUTPUTTYPE=NIFTI;' ...
                 ...
                 'applytopup' ...
-                ' --imain=' PREPROC.func_reference_file ...
+                ' --imain=' PREPROC.func_reference_files{i} ...
                 ' --inindex=' num2str(applytopup_idx) ...
                 ' --topup=' PREPROC.topup.output_path ...
                 ' --datain=' PREPROC.topup.dc_param_file ...
                 ' --method=jac' ...
                 ' --interp=spline' ...
-                ' --out=' PREPROC.dc_func_reference_file]);
+                ' --out=' PREPROC.dc_func_reference_files{i}]);
             
             % Removing spline interpolation neg values by absolute
             system(['export FSLOUTPUTTYPE=NIFTI;' ...
                 ...
                 'fslmaths' ...
-                ' ' PREPROC.dc_func_reference_file ...
+                ' ' PREPROC.dc_func_reference_files{i} ...
                 ' -abs' ...
-                ' ' PREPROC.dc_func_reference_file]);
+                ' ' PREPROC.dc_func_reference_files{i}]);
             
             % Extract brain mask of reference image
             fprintf('Extracting brain of reference image and saving implicit mask...\n');
-            PREPROC.dc_func_reference_file_masked = fullfile(PREPROC.preproc_func_dir, 'distortion_corrected_func_reference_masked.nii');
-            PREPROC.dc_func_reference_file_binarymask = fullfile(PREPROC.preproc_func_dir, 'distortion_corrected_func_reference_masked_mask.nii');
+            PREPROC.dc_func_reference_files_masked{i, 1} = fullfile(PREPROC.preproc_func_dir, [b '_dc_reference_masked.nii']);
+            PREPROC.dc_func_reference_files_binarymask{i, 1} = fullfile(PREPROC.preproc_func_dir, [b '_dc_reference_masked_mask.nii']);
             system(['export FSLOUTPUTTYPE=NIFTI;' ...
                 ...
                 'bet' ...
-                ' ' PREPROC.dc_func_reference_file ...
-                ' ' PREPROC.dc_func_reference_file_masked ...
+                ' ' PREPROC.dc_func_reference_files{i} ...
+                ' ' PREPROC.dc_func_reference_files_masked{i} ...
                 ' -f 0.3' ... % ICA-AROMA recommendation
                 ' -n' ...
                 ' -m' ...
                 ' -R']);
-        end
             
+        end
+        
+        if PREPROC.ref_first_run
+            ref_run = 1;
+        else
+            ref_run = i;
+        end
+        ref = PREPROC.dc_func_reference_files{ref_run};
+        ref_masked = PREPROC.dc_func_reference_files_masked{ref_run};
+        ref_binmask = PREPROC.dc_func_reference_files_binarymask{ref_run}; 
         
         % Save mean functional image
         fprintf('Saving mean functional image...\n');
@@ -304,14 +315,19 @@ for i = 1:numel(PREPROC.func_bold_files)
             ...
             'fslmaths' ...
             ' ' PREPROC.mean_dc_func_bold_files{i} ...
-            ' -mul ' PREPROC.dc_func_reference_file_binarymask ...
+            ' -mul ' ref_binmask ...
             ' ' PREPROC.mean_dc_func_bold_files_masked{i}]);
     
     end
     
 end
 
-% Take snapshot of motion-corrected mean functional images
+% Take snapshot of distortion-corrected reference images
+fprintf('Taking snapshot of distortion-corrected reference images.\n');
+canlab_preproc_show_montage(PREPROC.dc_func_reference_files_masked, fullfile(PREPROC.qcdir, 'dc_func_reference_masked.png'));
+drawnow;
+
+% Take snapshot of distortion-corrected mean functional images
 fprintf('Taking snapshot of distortion-corrected mean functional images.\n');
 canlab_preproc_show_montage(PREPROC.mean_dc_func_bold_files_masked, fullfile(PREPROC.qcdir, ['mean_' PREPROC.current_step_letter '_func_bold_masked.png']));
 drawnow;
