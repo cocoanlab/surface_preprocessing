@@ -101,8 +101,6 @@ for i = 1:numel(PREPROC.func_bold_files)
         PREPROC.w_func_bold_files{i, 1} = fullfile(PREPROC.preproc_func_dir, [PREPROC.current_step_letter b '.nii']);
         
         if strcmp(PREPROC.anat_normalization_method, 'FSL')
-            [~, volinfo] = system(['fslnvols ' input_dat]);
-            num_vols = str2num(volinfo);
             [~, temp_prewarp_dir] = system('mktemp -d');
             temp_prewarp_dir = strtrim(temp_prewarp_dir);
             [~, temp_postwarp_dir] = system('mktemp -d');
