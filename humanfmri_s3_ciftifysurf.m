@@ -20,6 +20,9 @@ function PREPROC = humanfmri_s3_ciftifysurf(subject_code, study_imaging_dir, cif
 %
 % :Optional Input:
 % ::
+%   - n_ero_limit        limit of number of erosion.
+%                        (e.g., [3 1]: 3 and 1 times for WM and CSF)
+%                        (default: [5 2]).
 %   - nvox_ero_limit     limit of number of voxels for erosion
 %                        (default: 100).
 %
@@ -67,10 +70,13 @@ function PREPROC = humanfmri_s3_ciftifysurf(subject_code, study_imaging_dir, cif
 
 fprintf('\n\n\n');
 nvox_ero_limit = 100;
+n_ero_limit = [5 2];
 
 for i = 1:length(varargin)
     if ischar(varargin{i})
         switch varargin{i}
+            case {'n_ero_limit'}
+                n_ero_limit = varargin{i+1};
             case {'nvox_ero_limit'}
                 nvox_ero_limit = varargin{i+1};
         end
@@ -212,7 +218,7 @@ system(['wb_command' ...
     ' -var b ' fullfile(PREPROC.preproc_anat_dir, 'anat_reference_wmseg_part2.nii') ...
     ' -var c ' fullfile(PREPROC.preproc_anat_dir, 'anat_reference_wmseg_part3.nii')]);
 system(['rm ' fullfile(PREPROC.preproc_anat_dir, 'anat_reference_wmseg_part*.nii')]);
-for i = 1:5
+for i = 1:n_ero_limit(1)
     PREPROC.anat_reference_file_wmseg_nuisance_erosion{i, 1} = fullfile(PREPROC.preproc_anat_dir, ['anat_reference_wmseg_nuisance_ero' num2str(i) '.nii']);
     if i == 1
         input_dat = PREPROC.anat_reference_file_wmseg_nuisance;
@@ -272,7 +278,7 @@ system(['wb_command' ...
     ' -var a ' fullfile(PREPROC.preproc_anat_dir, 'anat_reference_csfseg_part1.nii') ...
     ' -var b ' fullfile(PREPROC.preproc_anat_dir, 'anat_reference_csfseg_part2.nii')]);
 system(['rm ' fullfile(PREPROC.preproc_anat_dir, 'anat_reference_csfseg_part*.nii')]);
-for i = 1:2
+for i = 1:n_ero_limit(2)
     PREPROC.anat_reference_file_csfseg_nuisance_erosion{i, 1} = fullfile(PREPROC.preproc_anat_dir, ['anat_reference_csfseg_nuisance_ero' num2str(i) '.nii']);
     if i == 1
         input_dat = PREPROC.anat_reference_file_csfseg_nuisance;
