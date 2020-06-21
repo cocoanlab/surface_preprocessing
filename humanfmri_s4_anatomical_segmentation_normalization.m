@@ -65,11 +65,17 @@ function PREPROC = humanfmri_s4_anatomical_segmentation_normalization(subject_co
 
 
 fprintf('\n\n\n');
+nvox_ero_limit = 100;
+n_ero_limit = [5 2];
 n_thread = 1;
 
 for i = 1:length(varargin)
     if ischar(varargin{i})
         switch varargin{i}
+            case {'n_ero_limit'}
+                n_ero_limit = varargin{i+1};
+            case {'nvox_ero_limit'}
+                nvox_ero_limit = varargin{i+1};
             case {'n_thread'}
                 n_thread = varargin{i+1};
         end
@@ -174,7 +180,7 @@ system(['rm ' fullfile(PREPROC.preproc_anat_dir, 'anat_reference_fastseg*')]);
 
 % Erosion of WM/CSF masks for nuisance regression
 fprintf('Erosion of WM/CSF masks for nuisance regression...\n');
-for i = 1:5
+for i = 1:n_ero_limit(1)
     PREPROC.anat_reference_file_wmseg_nuisance_erosion{i, 1} = fullfile(PREPROC.preproc_anat_dir, ['anat_reference_wmseg_nuisance_ero' num2str(i) '.nii']);
     if i == 1
         input_dat = PREPROC.anat_reference_file_wmseg_nuisance;
@@ -187,13 +193,13 @@ for i = 1:5
         'fslmaths ' input_dat ' -ero ' output_dat]);
     [~, nvox] = system(['fslstats ' output_dat ' -V']);
     nvox = str2num(nvox);
-    if nvox(1) < 100
+    if nvox(1) < nvox_ero_limit
         system(['rm ' PREPROC.anat_reference_file_wmseg_nuisance_erosion{i}]);
         PREPROC.anat_reference_file_wmseg_nuisance_erosion(i) = [];
         break;
     end
 end
-for i = 1:2
+for i = 1:n_ero_limit(2)
     PREPROC.anat_reference_file_csfseg_nuisance_erosion{i, 1} = fullfile(PREPROC.preproc_anat_dir, ['anat_reference_csfseg_nuisance_ero' num2str(i) '.nii']);
     if i == 1
         input_dat = PREPROC.anat_reference_file_csfseg_nuisance;
@@ -206,7 +212,7 @@ for i = 1:2
         'fslmaths ' input_dat ' -ero ' output_dat]);
     [~, nvox] = system(['fslstats ' output_dat ' -V']);
     nvox = str2num(nvox);
-    if nvox(1) < 100
+    if nvox(1) < nvox_ero_limit
         system(['rm ' PREPROC.anat_reference_file_csfseg_nuisance_erosion{i}]);
         PREPROC.anat_reference_file_csfseg_nuisance_erosion(i) = [];
         break;
