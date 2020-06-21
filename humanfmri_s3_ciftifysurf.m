@@ -1,4 +1,4 @@
-function PREPROC = humanfmri_s3_ciftifysurf(subject_code, study_imaging_dir, ciftify_basedir)
+function PREPROC = humanfmri_s3_ciftifysurf(subject_code, study_imaging_dir, ciftify_basedir, varargin)
 
 % This function converts surface data that is reconstructed by Freesurfer
 % ('recon-all' function') to CIFTI format, using ciftify_recon_all
@@ -16,6 +16,12 @@ function PREPROC = humanfmri_s3_ciftifysurf(subject_code, study_imaging_dir, cif
 %   - study_imaging_dir  the directory information for the study imaging data 
 %                        (e.g., '/Volumes/habenula/hbmnas/data/CAPS2/Imaging').
 %   - ciftify_basedir    the cifitify toolbox directory.
+%
+%
+% :Optional Input:
+% ::
+%   - nvox_ero_limit     limit of number of voxels for erosion
+%                        (default: 100).
 %
 %
 % :Output:
@@ -60,6 +66,16 @@ function PREPROC = humanfmri_s3_ciftifysurf(subject_code, study_imaging_dir, cif
 
 
 fprintf('\n\n\n');
+nvox_ero_limit = 100;
+
+for i = 1:length(varargin)
+    if ischar(varargin{i})
+        switch varargin{i}
+            case {'nvox_ero_limit'}
+                nvox_ero_limit = varargin{i+1};
+        end
+    end
+end
 
 PREPROC = save_load_PREPROC(fullfile(study_imaging_dir, 'preprocessed', subject_code), 'load'); % load PREPROC
 print_header('Converting surface to CIFTI format', PREPROC.subject_code);
@@ -209,7 +225,7 @@ for i = 1:5
         'fslmaths ' input_dat ' -ero ' output_dat]);
     [~, nvox] = system(['fslstats ' output_dat ' -V']);
     nvox = str2num(nvox);
-    if nvox(1) < 100
+    if nvox(1) < nvox_ero_limit
         system(['rm ' PREPROC.anat_reference_file_wmseg_nuisance_erosion{i}]);
         PREPROC.anat_reference_file_wmseg_nuisance_erosion(i) = [];
         break;
@@ -269,7 +285,7 @@ for i = 1:2
         'fslmaths ' input_dat ' -ero ' output_dat]);
     [~, nvox] = system(['fslstats ' output_dat ' -V']);
     nvox = str2num(nvox);
-    if nvox(1) < 100
+    if nvox(1) < nvox_ero_limit
         system(['rm ' PREPROC.anat_reference_file_csfseg_nuisance_erosion{i}]);
         PREPROC.anat_reference_file_csfseg_nuisance_erosion(i) = [];
         break;
