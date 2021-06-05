@@ -86,15 +86,15 @@ if regexp(hostname, ['\w*' 'hebenula.local' '\w*'])
     gitdir = fullfile(rootdir, 'github');
     if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
-    if add_spm12; addpath(genpath(fullfile(rootdir, 'Resource/spm12'))); end
-elseif regexp(hostname, ['\w*' 'cocoanui-iMac-Pro4.local' '\w*'])
-    fprintf('Currently working on alita!\n');
-    rootdir = '/Volumes/alita';
+    if add_spm12; addpath(genpath(fullfile(basedir, 'resources/spm12'))); end
+elseif regexp(hostname, ['\w*' 'homeo.local' '\w*'])
+    fprintf('Currently working on Homeo!\n');
+    rootdir = '/Volumes/homeo';
     basedir = fullfile(rootdir, 'dropbox');
     gitdir = fullfile(rootdir, 'github');
     if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
-    if add_spm12; addpath(genpath(fullfile(rootdir, 'Resource/spm12'))); end
+    if add_spm12; addpath(genpath(fullfile(basedir, 'resources/spm12'))); end
 elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
     fprintf('Currently working on HPC!\n');
     rootdir = '/cocoanlab';
