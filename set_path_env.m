@@ -110,7 +110,7 @@ elseif regexp(hostname, ['\w*' 'JaeJoongui-MacBook-Pro.local' '\w*'])
     gitdir = fullfile(rootdir, 'github');
     if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
-    if add_spm12; addpath(genpath(fullfile(rootdir, 'Resource/spm12'))); end
+    if add_spm12; addpath(genpath(fullfile(rootdir, 'resources/spm12'))); end
 else
     error('No matching hostname.');
 end
