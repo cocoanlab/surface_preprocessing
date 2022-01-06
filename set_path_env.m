@@ -103,7 +103,7 @@ elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
     if add_canlab; addpath(genpath('/sas1/cocoanlab/Resources/github/canlab')); rmpath(genpath('/sas1/cocoanlab/Resources/github/canlab/MediationToolbox/geom2d')); rmpath(genpath('/sas1/cocoanlab/Resources/github/canlab/CanlabPrivate/preprocess')); end
     if add_cocoanlab; addpath(genpath('/sas1/cocoanlab/Resources/github/cocoanlab')); end
     if add_spm12; addpath(genpath('/sas1/cocoanlab/Resources/spm12')); end
-elseif regexp(hostname, ['\w*' 'JaeJoongui-MacBook-Pro.local' '\w*'])
+elseif regexp(hostname, ['\w*' 'JJ-macpro.local' '\w*'])
     fprintf('Currently working on JJ macbook!\n');
     rootdir = '/Users/jaejoonglee';
     basedir = fullfile(rootdir, 'dropbox');
