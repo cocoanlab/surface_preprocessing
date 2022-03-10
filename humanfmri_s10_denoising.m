@@ -21,7 +21,7 @@ function PREPROC = humanfmri_s10_denoising(subject_code, study_imaging_dir, vara
 %   - run_num            runs to include. ex) [1 2 4 5], ...
 %   - detrend            maximum of polynomial degree to detrend. ex) 0 (none), 1 (linear), 2 (quadratic) ...
 %   - bandpass           bandpass filtering with preserving specified frequency.
-%                        ex) [0 0.1] (LPF 0.1Hz), [0.008 0.1] (BPF 0.008-0.1Hz), [0.008 1] (HPF 0.008Hz)
+%                        ex) [0 0.1] (LPF 0.1Hz), [0.008 0.1] (BPF 0.008-0.1Hz), [0.008 9999] (HPF 0.008Hz)
 %                        Note: this function uses the TR information in PREPROC data.
 %   - movement           regress motion-related signals out, followed by specified method.
 %                        ex) 'movement', '6p': regress out 6 (x, y, z, roll, pitch, yaw) motion parameters
