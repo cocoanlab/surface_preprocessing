@@ -86,7 +86,7 @@ if regexp(hostname, ['\w*' 'hebenula.local' '\w*'])
     gitdir = fullfile(rootdir, 'github');
     if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
-    if add_spm12; addpath(genpath(fullfile(basedir, 'resources/spm12'))); rmpath(genpath(fullfile(basedir, 'resources/spm12/external/fieldtrip/compat'))); rmpath(genpath(fullfile(basedir, 'resources/spm12/external/fieldtrip/external'))); end
+    if add_spm12; addpath(genpath(fullfile(basedir, 'resources/spm12'))); rmpath(genpath(fullfile(basedir, 'resources/spm12/external'))); end
 elseif regexp(hostname, ['\w*' 'homeo.local' '\w*'])
     fprintf('Currently working on Homeo!\n');
     rootdir = '/Volumes/homeo';
@@ -94,7 +94,7 @@ elseif regexp(hostname, ['\w*' 'homeo.local' '\w*'])
     gitdir = fullfile(rootdir, 'github');
     if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
-    if add_spm12; addpath(genpath(fullfile(basedir, 'resources/spm12'))); rmpath(genpath(fullfile(basedir, 'resources/spm12/external/fieldtrip/compat'))); rmpath(genpath(fullfile(basedir, 'resources/spm12/external/fieldtrip/external')));end
+    if add_spm12; addpath(genpath(fullfile(basedir, 'resources/spm12'))); rmpath(genpath(fullfile(basedir, 'resources/spm12/external'))); end
 elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
     fprintf('Currently working on HPC!\n');
     rootdir = '/cocoanlab';
@@ -102,7 +102,7 @@ elseif regexp(hostname, ['\w*' 'cnir' '\w*'])
     gitdir = '/home/indaydreams/github';
     if add_canlab; addpath(genpath('/sas1/cocoanlab/Resources/github/canlab')); rmpath(genpath('/sas1/cocoanlab/Resources/github/canlab/MediationToolbox/geom2d')); rmpath(genpath('/sas1/cocoanlab/Resources/github/canlab/CanlabPrivate/preprocess')); end
     if add_cocoanlab; addpath(genpath('/sas1/cocoanlab/Resources/github/cocoanlab')); end
-    if add_spm12; addpath(genpath('/sas1/cocoanlab/Resources/spm12')); rmpath(genpath('/sas1/cocoanlab/Resources/spm12/external/fieldtrip/compat')); rmpath(genpath('/sas1/cocoanlab/Resources/spm12/external/fieldtrip/external')); end
+    if add_spm12; addpath(genpath('/sas1/cocoanlab/Resources/spm12')); rmpath(genpath('/sas1/cocoanlab/Resources/spm12/external')); end
 elseif regexp(hostname, ['\w*' 'JJ-macpro.local' '\w*'])
     fprintf('Currently working on JJ macbook!\n');
     rootdir = '/Users/jaejoonglee';
@@ -110,7 +110,7 @@ elseif regexp(hostname, ['\w*' 'JJ-macpro.local' '\w*'])
     gitdir = fullfile(rootdir, 'github');
     if add_canlab; addpath(genpath(fullfile(rootdir, 'github/canlab'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/MediationToolbox/geom2d'))); rmpath(genpath(fullfile(rootdir, 'github/canlab/CanlabPrivate/preprocess'))); end
     if add_cocoanlab; addpath(genpath(fullfile(rootdir, 'github/cocoanlab'))); end
-    if add_spm12; addpath(genpath(fullfile(rootdir, 'resources/spm12'))); rmpath(genpath(fullfile(rootdir, 'resources/spm12/external/fieldtrip/compat'))); rmpath(genpath(fullfile(rootdir, 'resources/spm12/external/fieldtrip/external'))); end
+    if add_spm12; addpath(genpath(fullfile(rootdir, 'resources/spm12'))); rmpath(genpath(fullfile(rootdir, 'resources/spm12/external'))); end
 else
     error('No matching hostname.');
 end
